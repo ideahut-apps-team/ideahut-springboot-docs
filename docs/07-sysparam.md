@@ -1,3 +1,7 @@
+<div align="center">
+   <img src="./images/sysparam.jpg" alt="SysParam" title="SysParam" width="800" />
+</div>
+
 # SysParam
 Menyimpan konfigurasi aplikasi ke database dan redis.
 
@@ -11,34 +15,56 @@ protected SysParamHandler sysParamHandler(
 ) {
     return new SysParamHandlerImpl()
     .setDataMapper(dataMapper)
-    .setRedisTemplate(redisTemplate)
-    .setReloader(new SysParamReloader() {
-        @Override
-        public List<SysParamDto> reload(Collection<String> sysCodes) {
-            TrxManagerInfo trxManagerInfo = entityTrxManager.getDefaultTrxManagerInfo();
-            return trxManagerInfo.transaction(new SessionCallable<List<SysParamDto>>() {
-                @Override
-                public List<SysParamDto> call(Session session) throws Exception {
-                    boolean notEmpty = sysCodes != null && !sysCodes.isEmpty();
-                    Query<SysParam> query = session.createQuery(
-                        "from SysParam " + (notEmpty ? "where id.sysCode in (?1)": ""), 
-                        SysParam.class
-                    );
-                    if (notEmpty) {
-                        query.setParameter(1, sysCodes);
-                    }
-                    List<SysParamDto> dtos = new ArrayList<SysParamDto>();
-                    List<SysParam> entities = query.getResultList();
-                    while (!entities.isEmpty()) {
-                        SysParam entity = entities.remove(0);
-                        SysParamDto dto = new SysParamDto(entity.getId().getSysCode(), entity.getId().getParamCode());
-                        BeanUtils.copyProperties(entity, dto, "id");
-                        dtos.add(dto);
-                    }
-                    return dtos;
-                }
-            });
-        }
-    });
+    .setEntityTrxManager(entityTrxManager)
+    .setEntityClass(new SysParamHandlerImpl.EntityClass()
+        .setSysParam(SysParam.class)	
+    )
+    .setRedisTemplate(redisTemplate);
+}
+```
+* `dataMapper` Data Mapper bean.
+* `entityTrxManager` EntityTrxManager bean.
+* `entityClass` Nama class entity SysParam.
+* `redisTempate` RedisTemplate bean.
+
+## Contoh
+``` java
+@Autowired
+private SysParamHandler sysParamHandler;
+
+@Public
+@GetMapping("/sysparam/maps")
+protected Map<String, Map<String, EntSysParam>> sysParamMaps() throws Exception {
+    return sysParamHandler.getSysParamMaps("ARTICLE", "MULTIMEDIA");
+}
+
+@Public
+@GetMapping("/sysparam/value")
+protected EntSysParam sysParamValue() {
+    return sysParamHandler.getSysParam("SENTIMENT", "DEFAULT_ANALYZER_ID");
+}
+
+@Public
+@GetMapping("/sysparam/reloadSysCodes")
+protected void reloadSysCodes() {
+    ((SysParamReloader) sysParamHandler).reloadSysCodes("ARTICLE", "MULTIMEDIA");
+}
+
+@Public
+@GetMapping("/sysparam/removeSysCodes")
+protected void removeSysCodes() {
+    ((SysParamRemover) sysParamHandler).removeSysCodes("ARTICLE", "MULTIMEDIA");
+}
+
+@Public
+@GetMapping("/sysparam/reloadSysParam")
+protected void reloadSysParam() {
+    ((SysParamReloader) sysParamHandler).reloadSysParam("SENTIMENT", "DEFAULT_ANALYZER_ID");
+}
+
+@Public
+@GetMapping("/sysparam/removeSysParam")
+protected void removeSysParam() {
+    ((SysParamRemover) sysParamHandler).removeSysParam("SENTIMENT", "DEFAULT_ANALYZER_ID");
 }
 ```

@@ -1,8 +1,59 @@
 # Annotation
 Daftar _annotation_ yang tersedia.
 
+## @ApiExclude
+Bisa di entity/model (untuk crud endpoint), dan di controller (untuk request mapping).
+* Identifikasi entity/model bisa didaftarkan ke CRUD Resource atau tidak.
+```java
+// Entity tidak disertakan ke CRUD Resource
+@ApiExclude
+@Audit
+@Entity
+@Table(name = "api_access")
+@Setter
+@Getter
+@SuppressWarnings("serial")
+public class ApiAccess extends EntAccess {
+	public ApiAccess() {
+		super();
+	}
+	public ApiAccess(EntAccessId id) {
+		super(id);
+	}
+}
+```
+* Identitfikasi _request mapping_ bisa di-set permission atau tidak.
+```java
+// Semua request mapping di AdminController tidak di-set permission
+@ApiExclude
+@ComponentScan
+@RestController
+@RequestMapping("/admin")
+class AdminController extends WebMvcAdminController {
+	private final DataMapper dataMapper;
+	private final AdminHandler adminHandler;
+	@Autowired
+	AdminController(
+		DataMapper dataMapper,
+		AdminHandler adminHandler
+	) {
+		this.dataMapper = dataMapper;
+		this.adminHandler = adminHandler;
+	}
+	@Override
+	protected AdminHandler adminHandler() {
+		return adminHandler;
+	}
+	@Override
+	protected DataMapper dataMapper() {
+		return dataMapper;
+	}
+
+}
+```
+
 ## @Audit
-Untuk mengidentifikasi suatu entity/model untuk diaudit setiap perubahannya.
+Untuk mengidentifikasi suatu entity/model bisa diaudit setiap perubahannya.
 ``` java
 @Audit
 @Entity
@@ -45,7 +96,7 @@ public Result login(
 ```
 
 ## @Public
-Sebagai tanda apakah API yang diakses bersifat public atau tidak. Default: true.
+Sebagai tanda apakah API yang diakses public atau tidak. Default: true.
 ``` java
 @Public
 @PostMapping(value = "/info")
@@ -53,17 +104,29 @@ public Result info() {
 }
 ```
 
-## @Reactive
-Sebagai tanda apakah request atau response reactive atau tidak.
-Request yang tidak reactive akan di-_load_ _body_-nya di Filter, sedangkan yang reactive akan di-_load_ di controller.
+## @Body
+* Request body di-_consume_ di level filter atau controller (karena hanya bisa satu kali). Untuk stream request, sebaiknnya di-_consume_ di level controller.
+* Response body di-_produce_ oleh framework response writer atau manual di controller. Untuk stream response, sebaiknya di-_produce_ di level controller.
 ``` java
-@Reactive(request = true, response = false)
+// request body di-consume di controller
+@@Body(request = true, response = false)
 @PostMapping(value = "/upload")
 public Mono<Result> upload(ServerHttpRequest request) {
 }
 
-@Reactive(request = false, response = true)
+// response body di-produce di controller
+@Body(request = false, response = true)
 @PostMapping(value = "/stream")
 public Flux<byte[]> stream(@RequestParam("id") String id) {
+}
+
+// request body di-consume di controller, dan response body di-produce di controller
+@Body(request = true, response = true)
+@GetMapping
+protected ResponseEntity<StreamingResponseBody> report(
+	ServerHttpRequest request
+) throws Exception {
+	// get stream request
+	// send stream response
 }
 ```

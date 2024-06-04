@@ -1,9 +1,12 @@
-# Entity Transaction Manager
+<div align="center">
+   <img src="./images/entity.jpg" alt="Entity" title="Entity" width="800" />
+</div>
 
-* Men-_scan_ semua entity/model dari setiap _Transaction Manager_ yang tersedia.
+# Entity Transaction Manager
+* Men-_scan_ semua entity/model dari setiap _Transaction Manager_ yang tersedia (bisa lebih dari satu).
 * Dapat digunakan untuk transaksi tanpa menggunakan DAO _Repository_.
-* Digunakan di CRUD, Audit, & Grid.
-* Bisa untuk transaksi standar maupun native.
+* Digunakan di [CRUD](./02-crud.md), [Audit](./04-audit.md), & [Grid](./03-grid.md).
+* Bisa untuk transaksi standar (hql) maupun native (sql).
 * Mendukung _replica_ (satu entity dimapping ke banyak table), contoh: entity User di-_mapping_ ke table user_1, user_2, user_3, dst.
 
 ## Bean
@@ -53,7 +56,7 @@ public class EmbeddedHardDel extends EntityAudit {
 }
 ```
 
-## Contoh penggunaan TrxManagerInfo
+## Contoh Transaksi
 ``` java
 TrxManagerInfo trxManagerInfo = entityTrxManager.getDefaultTrxManagerInfo();
 User user = trxManagerInfo.transaction(new SessionCallable<User>() {
@@ -65,7 +68,7 @@ User user = trxManagerInfo.transaction(new SessionCallable<User>() {
 ```
 ## PreListener
 Listener sebelum entity mengalami perubahan (INSERT, UPDATE, & DELETE).
-Contoh penggunaan di cache, untuk membuang data yang tersimpan di memori. 
+Contoh penggunaan di [cache](./05-cache.md), untuk membuang data yang tersimpan di memori. 
 ``` java
 public interface EntityPreListener {	
 	void onPreDelete(Object entity);
@@ -75,7 +78,7 @@ public interface EntityPreListener {
 ```
 ## PostListener
 Listener setelah entity mengalami perubahan (INSERT, UPDATE, & DELETE).
-Contoh penggunaan di audit, untuk menyimpan data perubahan ke audit handler.
+Contoh penggunaan di [audit](./04-audit.md), untuk menyimpan data perubahan ke audit handler.
 ``` java
 public interface EntityPostListener {
 	void onPostDelete(Object entity);

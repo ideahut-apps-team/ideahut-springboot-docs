@@ -1,5 +1,9 @@
+<div align="center">
+   <img src="./images/cache.jpg" alt="Cache" title="Cache" width="800" />
+</div>
+
 # Cache
-Menyimpan data ke memori atau redis berdasarkan key-nya.
+Menyimpan data ke memori atau redis.
 
 ## Group
 ### Bean

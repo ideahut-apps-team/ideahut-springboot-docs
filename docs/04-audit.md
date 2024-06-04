@@ -1,3 +1,7 @@
+<div align="center">
+   <img src="./images/audit.jpg" alt="Audit" title="Audit" width="800" />
+</div>
+
 # Audit
 Untuk menyimpan perubahan data entity/model.
 Akan disimpan tanggal perubahan, pengubah/user, aksi (INSERT / UPDATE / DELETE), dan data perubahan.

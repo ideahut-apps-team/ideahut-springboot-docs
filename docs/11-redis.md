@@ -1,3 +1,7 @@
+<div align="center">
+   <img src="./images/redis.jpg" alt="Redis" title="Redis" width="800" />
+</div>
+
 # Redis
 
 ## Bean

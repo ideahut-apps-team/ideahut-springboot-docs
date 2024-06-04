@@ -1,16 +1,22 @@
+<div align="center">
+   <img src="./images/grid.jpg" alt="Grid" title="Grid" width="800" />
+</div>
+
 # Grid
-Definisi UI untuk memproses CRUD dalam format json/xml.
+Definisi UI untuk memproses [CRUD](./02-crud.md) dalam format json/xml.
 ## Bean
 ``` java
 @Bean
 protected GridHandler gridHandler(
+    AppProperties appProperties,
     DataMapper dataMapper,
     RedisTemplate<String, byte[]> redisTemplate
 ) {
+    AppProperties.Grid grid = appProperties.getGrid();
     return new GridHandlerImpl()
-    .setApplicationContext(applicationContext)
     .setDataMapper(dataMapper)
-    .setLocation(appProperties.getGridLocation())
+    .setLocation(grid.getLocation())
+    .setDefinition(grid.getDefinition())
     .setRedisTemplate(redisTemplate)
     .setAdditionals(GridSupport.getAdditionals())
     .setOptions(GridSupport.getOptions());

@@ -1,10 +1,11 @@
 <div align="left">
 
-# Tutorial Ideahut Spring Boot <img height="32" src="https://avatars.githubusercontent.com/u/317776?s=48&v=4" alt="Spring"> <img height="32" src="./images/logo.png" alt="Ideahut">
+# Dokumentasi Ideahut Spring Boot <img height="32" src="https://avatars.githubusercontent.com/u/317776?s=48&v=4" alt="Spring"> <img height="32" src="./images/logo.png" alt="Ideahut">
 
 </div>
 
 # Daftar Isi
+- [Instalasi](./00-installation.md)
 - [Entity](./01-entity.md)
 - [CRUD](./02-crud.md)
 - [Grid](./03-grid.md)
