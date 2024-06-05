@@ -11,7 +11,7 @@ Untuk mengaktifkan library Ideahut Spring Boot di project.
 </dependency>
 <dependency>
     <groupId>net.ideahut</groupId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <artifactId>ideahut-springboot-3.2.3</artifactId>
 </dependency>
 ```
