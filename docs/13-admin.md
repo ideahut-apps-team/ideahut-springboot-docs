@@ -174,8 +174,8 @@ class WebMvcConfig extends net.ideahut.springboot.config.WebMvcBasicConfig {
 			.addResourceHandler(resource.getRequestPath() + "/**")
 			.addResourceLocations(resource.getLocations())
 			.setCacheControl(CacheControl.maxAge(60, TimeUnit.DAYS))
-	        .resourceChain(false)
-	        .addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
+			.resourceChain(false)
+			.addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
 		}
 		super.addResourceHandlers(registry);
 	}
@@ -198,8 +198,8 @@ class WebFluxConfig extends net.ideahut.springboot.config.WebFluxBasicConfig {
 			.addResourceHandler(resource.getRequestPath() + "/**")
 			.addResourceLocations(resource.getLocations())
 			.setCacheControl(CacheControl.maxAge(60, TimeUnit.DAYS))
-	        .resourceChain(false)
-	        .addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
+			.resourceChain(false)
+			.addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
 		}
 		super.addResourceHandlers(registry);
 	}
