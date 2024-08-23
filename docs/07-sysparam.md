@@ -1,14 +1,12 @@
-<div align="center">
-   <img src="./images/sysparam.jpg" alt="SysParam" title="SysParam" width="800" />
-</div>
-
 # SysParam
+
 Menyimpan konfigurasi aplikasi ke database dan redis.
 
 ## Bean
+
 ``` java
 @Bean
-protected SysParamHandler sysParamHandler(
+SysParamHandler sysParamHandler(
     DataMapper dataMapper,
     RedisTemplate<String, byte[]> redisTemplate,
     EntityTrxManager entityTrxManager
@@ -17,17 +15,19 @@ protected SysParamHandler sysParamHandler(
     .setDataMapper(dataMapper)
     .setEntityTrxManager(entityTrxManager)
     .setEntityClass(new SysParamHandlerImpl.EntityClass()
-        .setSysParam(SysParam.class)	
+        .setSysParam(SysParam.class) 
     )
     .setRedisTemplate(redisTemplate);
 }
 ```
+
 * `dataMapper` Data Mapper bean.
 * `entityTrxManager` EntityTrxManager bean.
 * `entityClass` Nama class entity SysParam.
 * `redisTempate` RedisTemplate bean.
 
 ## Contoh
+
 ``` java
 @Autowired
 private SysParamHandler sysParamHandler;
@@ -68,3 +68,9 @@ protected void removeSysParam() {
     ((SysParamRemover) sysParamHandler).removeSysParam("SENTIMENT", "DEFAULT_ANALYZER_ID");
 }
 ```
+
+## Screenshot
+
+<div align="center">
+   <img src="./images/sysparam.jpg" alt="SysParam" title="SysParam" width="800" />
+</div>

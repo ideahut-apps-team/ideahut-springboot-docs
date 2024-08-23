@@ -1,13 +1,14 @@
-<div align="center">
-   <img src="./images/grid.jpg" alt="Grid" title="Grid" width="800" />
-</div>
-
 # Grid
-Definisi UI untuk memproses [CRUD](./02-crud.md) dalam format json/xml.
+
+- Definisi UI untuk memproses [CRUD](./02-crud.md) dalam format json/xml
+- Aksi-aksi add, edit, delete juga didefinisikan
+- Contoh file [grid / template](03-grid.json)
+
 ## Bean
+
 ``` java
 @Bean
-protected GridHandler gridHandler(
+GridHandler gridHandler(
     AppProperties appProperties,
     DataMapper dataMapper,
     RedisTemplate<String, byte[]> redisTemplate
@@ -24,15 +25,19 @@ protected GridHandler gridHandler(
 ```
 
 ## Options
+
 Daftar _option_ yang bisa digunakan oleh grid.
+
 ``` java
 public interface GridOption {
-	List<Option> getOption(ApplicationContext applicationContext);	
+    List<Option> getOption(ApplicationContext applicationContext); 
 }
 
 public class Option implements Serializable {
-	private String value;	
-	private String label;
+    private String value; 
+    private String label;
+    private String icon;
+    private String description;
 }
 
 // Contoh
@@ -48,10 +53,12 @@ public static Map<String, GridOption> getOptions() {
 ```
 
 ## Additionals
+
 Daftar _additional_ yang bisa digunakan oleh grid.
+
 ``` java
 public interface GridAdditional {
-	ArrayNode getAdditional(ApplicationContext applicationContext);
+    ArrayNode getAdditional(ApplicationContext applicationContext);
 }
 
 // Contoh
@@ -62,3 +69,9 @@ public static Map<String, GridAdditional> getAdditionals() {
     return additionals;
 }
 ```
+
+## Screenshot
+
+<div align="center">
+   <img src="./images/grid.jpg" alt="Grid" title="Grid" width="800" />
+</div>

@@ -3,13 +3,14 @@
 ## Bean
 
 ### WebMvc
+
 ``` java
 @Bean
-protected FilterRegistrationBean<WebMvcRequestFilter> defaultRequestFilter(
+FilterRegistrationBean<WebMvcRequestFilter> defaultRequestFilter(
     Environment environment,
     AppProperties appProperties,
     RequestMappingHandlerMapping handlerMapping
-) {		
+) {  
     return FrameworkUtil.createFilterBean(
         environment,
         new WebMvcRequestFilter()
@@ -25,23 +26,27 @@ protected FilterRegistrationBean<WebMvcRequestFilter> defaultRequestFilter(
 ```
 
 ### WebFlux
-``` java
-@Autowired
-private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
+``` java
 @Bean
-protected WebFluxRequestFilter defaultRequestFilter() {
+ WebFluxRequestFilter defaultRequestFilter(
+    AppProperties appProperties,
+    RequestMappingHandlerMapping requestMappingHandlerMapping,
+    RootRequestInterceptor rootRequestInterceptor,
+    AdminRequestInterceptor adminRequestInterceptor
+) {
     return new WebFluxRequestFilter()
     .setCorsHeaders(appProperties.getCors())
     .setTraceEnable(true)
-    .setEnableTimeResult(true)
     .setAllowPaths("/**")
+    .setTraceEnable(true)
     .setHandlerMapping(requestMappingHandlerMapping)
     .setInterceptors(rootRequestInterceptor, adminRequestInterceptor);
 }
 ```
 
 ### CORS
+
 ``` md
 cors:
     "Access-Control-Allow-Credentials": "true"
@@ -53,6 +58,7 @@ cors:
 ```
 
 ### Properties
+
 * `corsHeaders` CORS headers
 * `traceEnable` log MDC enable
 * `traceGenerator` log MDC trace id generator

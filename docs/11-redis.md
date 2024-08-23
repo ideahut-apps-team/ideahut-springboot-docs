@@ -1,13 +1,10 @@
-<div align="center">
-   <img src="./images/redis.jpg" alt="Redis" title="Redis" width="800" />
-</div>
-
 # Redis
 
 ## Bean
+
 ``` java
 @Bean
-protected RedisTemplate<String, byte[]> commonRedis() throws Exception {
+RedisTemplate<String, byte[]> commonRedis() throws Exception {
     RedisProperties properties = appProperties.getRedis().getCommon();
     RedisConnectionFactory connectionFactory = RedisHelper.createRedisConnectionFactory(properties, true);
     return RedisHelper.createRedisTemplate(connectionFactory, false);
@@ -15,11 +12,13 @@ protected RedisTemplate<String, byte[]> commonRedis() throws Exception {
 ```
 
 ## Type
+
 * `1`: standalone
 * `2`: cluster
 * `3`: sentinel
 
 ## Contoh Properties
+
 ``` md
 common:
     type: 1
@@ -30,3 +29,9 @@ common:
         password: "<password>"
         database: 0
 ```
+
+## Screenshot
+
+<div align="center">
+   <img src="./images/redis.jpg" alt="Redis" title="Redis" width="800" />
+</div>

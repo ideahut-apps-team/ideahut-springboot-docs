@@ -1,18 +1,17 @@
-<div align="center">
-   <img src="./images/cache.jpg" alt="Cache" title="Cache" width="800" />
-</div>
-
 # Cache
+
 Menyimpan data ke memori atau redis.
 
 ## Group
+
 ### Bean
+
 ``` java
 @Bean
-protected CacheGroupHandler cacheGroupHandler(
+CacheGroupHandler cacheGroupHandler(
     DataMapper dataMapper,
     RedisTemplate<String, byte[]> redisTemplate,
-    @Qualifier(AppConstants.Bean.Task.COMMON) TaskHandler taskHandler
+    TaskHandler taskHandler
 ) throws Exception {
     return new RedisCacheGroupHandler()
     .setDataMapper(dataMapper)
@@ -21,7 +20,9 @@ protected CacheGroupHandler cacheGroupHandler(
     .setTaskHandler(taskHandler);
 }
 ```
+
 ### Properties
+
 ``` md
 cache:
       groups:
@@ -34,19 +35,22 @@ cache:
            expiry: 0
            nullable: true
 ```
+
 * `name` nama group
 * `limit` maksimal jumlah key yang disimpan
 * `expiry` kadaluarsa dalam detik
 * `nullable` data null disimpan atau tidak
 
 ## Single
+
 ### Bean
+
 ``` java
 @Bean
-protected CacheHandler cacheHandler(
+CacheHandler cacheHandler(
     DataMapper dataMapper,
-    @Qualifier(AppConstants.Bean.Redis.COMMON) RedisTemplate<String, byte[]> redisTemplate,
-    @Qualifier(AppConstants.Bean.Task.COMMON) TaskHandler taskHandler
+    RedisTemplate<String, byte[]> redisTemplate,
+    TaskHandler taskHandler
 ) throws Exception {
     return new RedisCacheHandler()
     .setDataMapper(dataMapper)
@@ -57,3 +61,9 @@ protected CacheHandler cacheHandler(
     .setPrefix("_test");
 }
 ```
+
+## Screenshot
+
+<div align="center">
+   <img src="./images/cache.jpg" alt="Cache" title="Cache" width="800" />
+</div>

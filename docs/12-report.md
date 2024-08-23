@@ -1,7 +1,9 @@
 # Report
+
 Membuat report menggunakan library Jasper Report.
 
 ## Bean
+
 ``` java
 @Bean
 protected ReportHandler reportHandler() {
@@ -10,6 +12,7 @@ protected ReportHandler reportHandler() {
 ```
 
 ## Type
+
 * PDF
 * XLS
 * XLSX

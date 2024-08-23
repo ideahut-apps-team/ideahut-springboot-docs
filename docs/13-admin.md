@@ -1,10 +1,7 @@
-<div align="left">
-   <img src="./images/admin.jpg" alt="Admin" title="Admin" width="800" />
-</div>
-
 # Admin
 
 Untuk mengakses API dan halaman Admin, yang berguna untuk manajemen service:
+
 * `Reload` memuat ulang bean tanpa harus merestart service.
 * `Request` daftar request mapping yang tersedia di service.
 * `Redis` daftar redis server yang digunakan di service.
@@ -15,11 +12,12 @@ Untuk mengakses API dan halaman Admin, yang berguna untuk manajemen service:
 * `Scheduler` memonitor job, schedule/unschedule job, start/stop scheduler.
 
 ## Bean
+
 ``` java
 @Bean
-protected AdminHandler adminHandler(
+AdminHandler adminHandler(
     DataMapper dataMapper,
-    @Qualifier(AppConstants.Bean.Redis.COMMON) RedisTemplate<String, byte[]> redisTemplate
+    RedisTemplate<String, byte[]> redisTemplate
 ) {
     AppProperties.Admin admin = appProperties.getAdmin();
     return new AdminHandlerImpl()
@@ -33,9 +31,9 @@ protected AdminHandler adminHandler(
 }
 
 @Bean(name = AppConstants.Bean.Credential.ADMIN)
-protected RedisMemoryCredential adminCredential(
+RedisMemoryCredential adminCredential(
     DataMapper dataMapper,
-    @Qualifier(AppConstants.Bean.Redis.COMMON) RedisTemplate<String, byte[]> redisTemplate
+    RedisTemplate<String, byte[]> redisTemplate
 ) {
     AppProperties.Admin admin = appProperties.getAdmin();
     return new RedisMemoryCredential()
@@ -46,10 +44,10 @@ protected RedisMemoryCredential adminCredential(
 }
 
 @Bean(name = AppConstants.Bean.Security.ADMIN)
-protected AdminSecurity adminSecurity(
+AdminSecurity adminSecurity(
     DataMapper dataMapper,
     AdminHandler adminHandler,
-    @Qualifier(AppConstants.Bean.Credential.ADMIN) SecurityCredential credential
+    SecurityCredential credential
 ) {
     return new AdminSecurity()
     .setCredential(credential)
@@ -61,97 +59,103 @@ protected AdminSecurity adminSecurity(
 ```
 
 ## Konfigurasi
+
 ``` js
 {
-	"api": {
-		"requestPath": "/admin"
-	},
-	"resource": {
-		"title": " ",
-		"requestPath": "/_",
-		"locations": "file:{user.dir}/extras/admin/resource/",
-		"indexFile": "index.html",
-		"alwaysToIndex": true,
-		"allowedPaths": ["css", "fonts", "icons", "img", "js"]
-	},
-	"grid": {
-		"location": "file:{user.dir}/extras/admin/grid/**/*.json",
-		"definition": "file:{user.dir}/extras/admin/grid/grid.def"
-	},
-	"crud": {
-		"maxLimit": 200,
-		"useNative": false
-	},
-	"central": {
-		"resourceEndpoint": "http://localhost:6401/sync/resource",
-		"tokenEndpoint": "http://localhost:6401/sync/token",
-		"resourceDirectory": "{user.dir}/extras/admin/resource"
-	}
+    "api": {
+        "requestPath": "/admin"
+    },
+    "resource": {
+        "title": " ",
+        "requestPath": "/_",
+        "locations": "file:{user.dir}/extras/admin/resource/",
+        "indexFile": "index.html",
+        "alwaysToIndex": true,
+        "allowedPaths": ["css", "fonts", "icons", "img", "js"]
+    },
+    "grid": {
+        "location": "file:{user.dir}/extras/admin/grid/**/*.json",
+        "definition": "file:{user.dir}/extras/admin/grid/grid.def"
+    },
+    "crud": {
+        "maxLimit": 200,
+        "useNative": false
+    },
+    "central": {
+        "resourceEndpoint": "http://localhost:6401/sync/resource",
+        "tokenEndpoint": "http://localhost:6401/sync/token",
+        "resourceDirectory": "{user.dir}/extras/admin/resource"
+    }
 }
 ```
 
 ## Kredensial
+
 ``` js
 {
-	"passwordType": "bcrypt",
-	"redisExpiry": 15,
-	"users": [
-		{
-			"username": "admin",
-			"password": "$2a$10$NL8fAwz/UG6FCk6sEo10Ueuihe.oiX4DQHN4OWqXmDUM9.4Hnu8EC"
-		},
-		{
-			"username": "mimin",
-			"password": "$2a$10$uIAtTYQcSsXOR7xABu/gwOLqf3mOde7z2vZVqug3OjItsdKrmuc5m"
-		}
-	]
+    "passwordType": "bcrypt",
+    "redisExpiry": 15,
+    "users": [
+    {
+            "username": "admin",
+            "password": "$2a$10$NL8fAwz/UG6FCk6sEo10Ueuihe.oiX4DQHN4OWqXmDUM9.4Hnu8EC"
+        },
+        {
+            "username": "mimin",
+            "password": "$2a$10$uIAtTYQcSsXOR7xABu/gwOLqf3mOde7z2vZVqug3OjItsdKrmuc5m"
+        }
+    ]
 }
 ```
 
 ## Controller
+
 ### WebMvc
+
 ``` java
 @RestController
 @RequestMapping("/admin")
 class AdminController extends net.ideahut.springboot.admin.WebMvcAdminController {
-	
-	@Autowired
-	private DataMapper dataMapper;
-	@Autowired
-	private AdminHandler adminHandler;
-	
-	@Override
-	protected AdminHandler adminHandler() {
-		return adminHandler;
-	}
+ 
+    @Autowired
+    private DataMapper dataMapper;
+    @Autowired
+    private AdminHandler adminHandler;
+ 
+    @Override
+    protected AdminHandler adminHandler() {
+       return adminHandler;
+    }
 
-	@Override
-	protected DataMapper dataMapper() {
-		return dataMapper;
-	}	
+    @Override
+    protected DataMapper dataMapper() {
+       return dataMapper;
+    } 
 
 }
 ```
+
 ### WebFlux
+
 ``` java
 @RestController
 @RequestMapping("/admin")
 class AdminController extends net.ideahut.springboot.admin.WebFluxAdminController {
-	
-	@Autowired
-	private DataMapper dataMapper;
-	@Autowired
-	private AdminHandler adminHandler;
-	
-	@Override
-	protected AdminHandler adminHandler() {
-		return adminHandler;
-	}
+ 
+    @Autowired
+    private DataMapper dataMapper;
+    @Autowired
+    private AdminHandler adminHandler;
+ 
+    @Override
+    protected AdminHandler adminHandler() {
+       return adminHandler;
+    }
 
-	@Override
-	protected DataMapper dataMapper() {
-		return dataMapper;
-	}	
+    @Override
+    protected DataMapper dataMapper() {
+       return dataMapper;
+    } 
 
 }
 ```
@@ -159,49 +163,60 @@ class AdminController extends net.ideahut.springboot.admin.WebFluxAdminControlle
 ## Static Resource
 
 ### WebMvc
+
 ``` java
 @Configuration
 @EnableWebMvc
 class WebMvcConfig extends net.ideahut.springboot.config.WebMvcBasicConfig {
-	@Autowired
-	private AdminHandler adminHandler;
+    @Autowired
+    private AdminHandler adminHandler;
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		AdminProperties.Resource resource = adminHandler.getProperties().getResource();
-		if (resource != null) {
-			registry
-			.addResourceHandler(resource.getRequestPath() + "/**")
-			.addResourceLocations(resource.getLocations())
-			.setCacheControl(CacheControl.maxAge(60, TimeUnit.DAYS))
-			.resourceChain(false)
-			.addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
-		}
-		super.addResourceHandlers(registry);
-	}
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+       AdminProperties.Resource resource = adminHandler.getProperties().getResource();
+       if (resource != null) {
+           registry
+           .addResourceHandler(resource.getRequestPath() + "/**")
+           .addResourceLocations(resource.getLocations())
+           .setCacheControl(CacheControl.maxAge(60, TimeUnit.DAYS))
+           .resourceChain(false)
+           .addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
+       }
+       super.addResourceHandlers(registry);
+    }
 }
 ```
 
 ### WebFlux
+
 ``` java
 @Configuration
 @EnableWebFlux
 class WebFluxConfig extends net.ideahut.springboot.config.WebFluxBasicConfig {
-	@Autowired
-	private AdminHandler adminHandler;
+    @Autowired
+    private AdminHandler adminHandler;
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		AdminProperties.Resource resource = adminHandler.getProperties().getResource();
-		if (resource != null) {
-			registry
-			.addResourceHandler(resource.getRequestPath() + "/**")
-			.addResourceLocations(resource.getLocations())
-			.setCacheControl(CacheControl.maxAge(60, TimeUnit.DAYS))
-			.resourceChain(false)
-			.addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
-		}
-		super.addResourceHandlers(registry);
-	}
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+       AdminProperties.Resource resource = adminHandler.getProperties().getResource();
+       if (resource != null) {
+           registry
+           .addResourceHandler(resource.getRequestPath() + "/**")
+           .addResourceLocations(resource.getLocations())
+           .setCacheControl(CacheControl.maxAge(60, TimeUnit.DAYS))
+           .resourceChain(false)
+           .addResolver(new VersionResourceResolver().addContentVersionStrategy(resource.getRequestPath() + "/**"));
+       }
+       super.addResourceHandlers(registry);
+    }
 }
 ```
+
+## Screenshot
+
+<div align="left">
+   <img src="./images/admin-01.jpg" alt="admin-01" title="admin-01" width="800" />
+</div>
+<div align="left">
+   <img src="./images/admin-02.jpg" alt="admin-02" title="admin-02" width="800" />
+</div>

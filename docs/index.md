@@ -1,10 +1,7 @@
-<div align="left">
-
 # Dokumentasi Ideahut Spring Boot <img height="32" src="https://avatars.githubusercontent.com/u/317776?s=48&v=4" alt="Spring"> <img height="32" src="./images/logo.png" alt="Ideahut">
 
-</div>
+## Daftar Isi
 
-# Daftar Isi
 - [Instalasi](./00-installation.md)
 - [Entity](./01-entity.md)
 - [CRUD](./02-crud.md)
@@ -19,7 +16,10 @@
 - [Redis](./11-redis.md)
 - [Report](./12-report.md)
 - [Admin](./13-admin.md)
+- [API](./14-api.md)
+- [Scheduler](./15-scheduler.md)
 
-# Repository
+## Repository
+
 - [Maven Repo](https://mvnrepository.com/artifact/net.ideahut)
 - [Sonatype](https://central.sonatype.com/search?namespace=net.ideahut)

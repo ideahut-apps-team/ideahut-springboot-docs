@@ -1,7 +1,9 @@
 # Task
+
 Untuk proses asinkronus.
 
 ## Bean
+
 ``` java
 @Bean(destroyMethod = "shutdown")
 protected TaskHandler commonTask() {
@@ -10,7 +12,8 @@ protected TaskHandler commonTask() {
 }
 ```
 
-## Contoh Properties
+### Properties
+
 ``` md
 common:
     threadNamePrefix: "TASK-COMMON"

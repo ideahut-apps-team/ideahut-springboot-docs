@@ -1,7 +1,9 @@
 # Mail
+
 Modul untuk mengirim email.
 
 ## Bean
+
 ``` java
 @Bean
 protected MailHandler mailHandler(TaskHandler taskHandler) {
@@ -12,6 +14,7 @@ protected MailHandler mailHandler(TaskHandler taskHandler) {
 ```
 
 ## Contoh Properties
+
 ``` md
 mail:
     host: smtp.gmail.com
