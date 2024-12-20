@@ -6,6 +6,6 @@
 
 Klik logo untuk memulai
 
-[<img height="128" src="./docs/images/logo.png" alt="Ideahut">](./docs/index.md)
+[<img height="128" src="./docs/assets/logo.png" alt="Ideahut">](./docs/index.md)
 
 </div>

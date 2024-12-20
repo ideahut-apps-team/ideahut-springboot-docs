@@ -1,11 +1,11 @@
 # API
 
-* Security untuk mengakses CRUD dan _Request Mapping_ berdasarkan ApiRole
-* Antar service / provider bisa berkomunikasi menggunakan token / signature
+* Security untuk mengakses CRUD dan _Request Mapping_ berdasarkan ApiRole.
+* Antar service / provider bisa berkomunikasi menggunakan token / signature.
 
 ## ApiHandler
 
-* Menangani data yang tersimpan di database dan redis
+* Menangani data yang tersimpan di database dan redis.
 
 ``` java
 @Bean
@@ -31,10 +31,10 @@ ApiHandler apiHandler(
 
 ## ApiTokenService
 
-* Membuat _consumer token_ untuk komunikasi antar service / provider
-* Memvalidasi signature (secret & digest) untuk komunikasi antar service / provider
-* Membuat _access token_ untuk ApiProcessor yang bertipe JWT
-* _SignatureTimeSpan_ adalah batas min / max timestamp terhadap waktu server dalam detik
+* Membuat _consumer token_ untuk komunikasi antar service / provider.
+* Memvalidasi signature (secret & digest) untuk komunikasi antar service / provider.
+* Membuat _access token_ untuk ApiProcessor yang bertipe JWT.
+* _SignatureTimeSpan_ adalah batas min / max timestamp terhadap waktu server dalam detik.
 
 ``` java
 @Bean
@@ -62,7 +62,7 @@ ApiTokenService apiTokenService(
 
 ## ApiAccessInternalService
 
-* Untuk mendapatkan ApiAccess jika ApiName token dan service sama (proses dilakukan di server penerbit token)
+* Untuk mendapatkan ApiAccess jika ApiName token dan service sama (proses dilakukan di server penerbit token).
 
 ``` java
 @Bean
@@ -79,7 +79,7 @@ ApiAccessInternalService apiAccessInternalService(
 
 ## ApiConsumerService
 
-* Untuk melakukan request dari satu service ke service yang lain
+* Untuk melakukan request dari satu service ke service yang lain.
 
 ``` java
 @Bean
@@ -95,12 +95,12 @@ ApiConsumerService apiConsumerService(
 
 ## ApiService
 
-* Meng-handle semua yang terkait dengan API CRUD dan Request Mapping
-* Ada 2 jenis, yaitu: WebMvcApiService & WebFluxApiService
-* Untuk mendapatkan ApiAccess custom bisa menggunakan setApiAccessRemoteService
-* Untuk mendapatkan ApiSource custom bisa menggunakan setApiSourceService
-* Untuk definisi request header custom bisa menggunakan setHeader
-* Untuk ApiName custom bisa menggunakan setApiName (default diambil dari 'spring.application.name')
+* Meng-handle semua yang terkait dengan API CRUD dan Request Mapping.
+* Ada 2 jenis, yaitu: WebMvcApiService & WebFluxApiService.
+* Untuk mendapatkan ApiAccess custom bisa menggunakan setApiAccessRemoteService.
+* Untuk mendapatkan ApiSource custom bisa menggunakan setApiSourceService.
+* Untuk definisi request header custom bisa menggunakan setHeader.
+* Untuk ApiName custom bisa menggunakan setApiName (default diambil dari 'spring.application.name').
 
 ```` java
 @Bean
@@ -152,19 +152,19 @@ WebMvcApiService apiService(
 
 ## Default HTTP Header
 
-* `Access-Token`: token access atau token consumer
-* `Access-Type`: kode tipe ApiProcessor
-* `Access-Signature`: signature untuk komunikasi antar service, hash-digest(secret + timestamp)
-* `Access-Timestamp`: timestamp dari service yang me-request
-* `Access-ZoneOffset`: time zone offset dalam detik dari service yang me-request, contoh: GMT+7 = 25200
-* `Access-From`: ApiName dari service yang me-request
-* `Access-Data`: data tambahan dalam format json/xml
+* `Access-Token`: token access atau token consumer.
+* `Access-Type`: kode tipe ApiProcessor.
+* `Access-Signature`: signature untuk komunikasi antar service, hash-digest(secret + timestamp).
+* `Access-Timestamp`: timestamp dari service yang me-request.
+* `Access-ZoneOffset`: time zone offset dalam detik dari service yang me-request, contoh: GMT+7 = 25200.
+* `Access-From`: ApiName dari service yang me-request.
+* `Access-Data`: data tambahan dalam format json / xml.
 
 ## ApiProcessor
 
-* Meng-_handle_ token access dan token consumer
+* Meng-_handle_ token access dan token consumer.
 * Untuk menambah custom processor dengan cara meng-extends class 'net.ideahut.springboot.api.ApiProcessor' dan gunakan ApiType yang belum terpakai.
-* Daftar default ApiProcessor bisa dilihat di table di di bawah (validasi berdasarkan User-Agent & Remote-Host pada saat token dibuat)
+* Daftar default ApiProcessor bisa dilihat di table di di bawah (validasi berdasarkan User-Agent & Remote-Host pada saat token dibuat).
 
 ||ApiType|Token Header|Scheme|User Agent|Remote Host|
 |---|:---:|:---:|:---:|:---:|:---:|
@@ -225,24 +225,28 @@ WebMvcApiService apiService(
 
 ## Screenshot
 
-<div align="left">
-   <img src="./images/api-01.jpg" alt="api-01" title="api-01" width="800" />
+<div>
+   <img src="./assets/api-01.jpg" alt="api-01" title="api-01" width="800" />
 </div>
-<div align="left">
-   <img src="./images/api-02.jpg" alt="api-02" title="api-02" width="800" />
+<div>
+   <img src="./assets/api-02.jpg" alt="api-02" title="api-02" width="800" />
 </div>
-<div align="left">
-   <img src="./images/api-03.jpg" alt="api-03" title="api-03" width="800" />
+<div>
+   <img src="./assets/api-03.jpg" alt="api-03" title="api-03" width="800" />
 </div>
-<div align="left">
-   <img src="./images/api-04.jpg" alt="api-04" title="api-04" width="800" />
+<div>
+   <img src="./assets/api-04.jpg" alt="api-04" title="api-04" width="800" />
 </div>
-<div align="left">
-   <img src="./images/api-05.jpg" alt="api-05" title="api-05" width="800" />
+<div>
+   <img src="./assets/api-05.jpg" alt="api-05" title="api-05" width="800" />
 </div>
-<div align="left">
-   <img src="./images/api-06.jpg" alt="api-06" title="api-06" width="800" />
+<div>
+   <img src="./assets/api-06.jpg" alt="api-06" title="api-06" width="800" />
 </div>
-<div align="left">
-   <img src="./images/api-07.jpg" alt="api-07" title="api-07" width="800" />
+<div>
+   <img src="./assets/api-07.jpg" alt="api-07" title="api-07" width="800" />
 </div>
+
+##
+
+### [Index](./index.md)

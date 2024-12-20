@@ -13,15 +13,15 @@ RedisTemplate<String, byte[]> commonRedis() throws Exception {
 
 ## Type
 
-* `1`: standalone
-* `2`: cluster
-* `3`: sentinel
+* `0`: standalone
+* `1`: cluster
+* `2`: sentinel
 
 ## Contoh Properties
 
 ``` md
 common:
-    type: 1
+    type: 0
     testOnStartup: true
     standalone:
         host: 127.0.0.1
@@ -32,6 +32,10 @@ common:
 
 ## Screenshot
 
-<div align="center">
-   <img src="./images/redis.jpg" alt="Redis" title="Redis" width="800" />
+<div>
+   <img src="./assets/redis.jpg" alt="Redis" title="Redis" width="800" />
 </div>
+
+##
+
+### [Index](./index.md)

@@ -1,6 +1,6 @@
 # Audit
 
-Untuk menyimpan perubahan data entity/model.
+Untuk menyimpan perubahan data entity / model.
 Akan disimpan tanggal perubahan, pengubah/user, aksi (INSERT / UPDATE / DELETE), dan data perubahan.
 Proses penyimpanan dilakukan asinkronus.
 
@@ -98,6 +98,10 @@ public class DatabaseAuditProperties implements Serializable {
 
 ## Screenshot
 
-<div align="center">
-   <img src="./images/audit.jpg" alt="Audit" title="Audit" width="800" />
+<div>
+   <img src="./assets/audit.jpg" alt="Audit" title="Audit" width="800" />
 </div>
+
+##
+
+### [Index](./index.md)

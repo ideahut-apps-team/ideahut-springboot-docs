@@ -1,8 +1,8 @@
 # Scheduler
 
-* Menangani job-job yang bekerja di latar belakang (background)
-* Load bisa dibagi berdasarkan instance yang ada
-* Proses start, stop, & pause bisa dilakukan di UI admin
+* Menangani job-job yang bekerja di latar belakang (background).
+* Load bisa dibagi berdasarkan instance yang ada.
+* Proses start, stop, & pause bisa dilakukan di UI admin.
 
 ## Bean
 
@@ -33,9 +33,13 @@ SchedulerHandler schedulerHandler(
 
 ## Screenshot
 
-<div align="left">
-   <img src="./images/scheduler-01.jpg" alt="Scheduler" title="Scheduler" width="800" />
+<div>
+   <img src="./assets/scheduler-01.jpg" alt="Scheduler" title="Scheduler" width="800" />
 </div>
-<div align="left">
-   <img src="./images/scheduler-02.jpg" alt="Scheduler" title="Scheduler" width="800" />
+<div>
+   <img src="./assets/scheduler-02.jpg" alt="Scheduler" title="Scheduler" width="800" />
 </div>
+
+##
+
+### [Index](./index.md)

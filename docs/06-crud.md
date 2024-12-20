@@ -1,13 +1,13 @@
 # CRUD
 
-- Secara otomatis semua entity yang terdeteksi dapat diakses menggunakan modul CRUD ini
-- Untuk membatasi akses dapat dipasangkan dengan ApiRole (lihat: modul [API](./14-api.md))
+- Secara otomatis semua entity / model yang terdeteksi oleh [EntityTrxManager](./04-entity.md) dapat diakses menggunakan modul ini.
+- Untuk membatasi akses dapat dipasangkan dengan ApiRole (lihat: modul [API](./17-api.md)).
 
 ## Bean
 
-- `CrudHandler`: meng-handle pengambilan resource dan permission
-- `CrudResource`: mendapatkan CrudProperties yang akan dieksekusi oleh `CrudHandler`
-- `CrudPermission`: mengecek apakah eksekusi diijinkan atau tidak
+- `CrudHandler`: meng-handle pengambilan resource dan permission.
+- `CrudResource`: mendapatkan CrudProperties yang akan dieksekusi oleh `CrudHandler`.
+- `CrudPermission`: mengecek apakah eksekusi diijinkan atau tidak.
 
 ``` java
 @Bean
@@ -35,7 +35,7 @@ CrudResource crudResource(
         @Override
         public CrudProps getCrudProps(String manager, String name) {
             try {
-                Class<?> clazz = FrameworkUtil.classOf(EntityFill.class.getPackageName() + "." + name);
+                Class<?> clazz = ObjectHelper.classOf(EntityFill.class.getPackageName() + "." + name);
                 TrxManagerInfo trxManagerInfo = entityTrxManager.getDefaultTrxManagerInfo();
                 if (manager != null && !manager.isEmpty()) {
                     trxManagerInfo = entityTrxManager.getTrxManagerInfo(manager);
@@ -85,9 +85,8 @@ CrudPermission crudPermission() {
 
 ## Controller
 
-### WebMvc
-
 ``` java
+// WebMvc
 @RestController
 @RequestMapping("/crud")
 class CrudController extends net.ideahut.springboot.crud.WebMvcCrudController {
@@ -100,11 +99,8 @@ class CrudController extends net.ideahut.springboot.crud.WebMvcCrudController {
         return super.body(CrudAction.valueOf(action.toUpperCase()), data);
     }
 }
-```
 
-### WebFlux
-
-``` java
+// WebFlux
 @RestController
 @RequestMapping("/crud")
 class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
@@ -135,37 +131,37 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
 - `MAP` mendapatkan koleksi data dalam bentuk _key_-_value_.
 - `CREATE` membuat data baru.
 - `UPDATE` memperbaharui data yang sudah ada.
-- `SAVE` membuat/memperbaharui data.
+- `SAVE` membuat / memperbaharui data.
 - `DELETE` menghapus satu data.
 - `DELETES` menghapus koleksi data.
 
 ## Condition
 
-- `ANY_LIKE` mengandung kalimat (huruf besar/kecil tidak wajib)
-- `ANY_START` dimulai dengan kalimat (huruf besar/kecil tidak wajib)
-- `ANY_END` diakhiri dengan kalimat (huruf besar/kecil tidak wajib)
-- `ANY_EQUAL` sama dengan kalimat (huruf besar/kecil tidak wajib)
-- `LIKE` mengandung kalimat
-- `START` dimulai dengan kalimat
-- `END` diakhiri dengan kalimat
-- `NOT_ANY_LIKE` tidak mengandung kalimat (huruf besar/kecil tidak wajib)
-- `NOT_ANY_START` tidak dimulai dengan kalimat (huruf besar/kecil tidak wajib)
-- `NOT_ANY_END` tidak diakhiri dengan kalimat (huruf besar/kecil tidak wajib)
-- `NOT_ANY_EQUAL` tidak sama dengan kalimat (huruf besar/kecil tidak wajib)
-- `NOT_LIKE` tidak mengandung kalimat
-- `NOT_START` tidak dimulai dengan kalimat
-- `NOT_END` tidak diakhiri dengan kalimat
-- `NOT_EQUAL` tidak sama dengan
-- `BETWEEN` diantara, min - max
-- `NOT_NULL` bukan null
-- `IS_NULL` hanya yang null
-- `GREATER_THAN` lebih besar
-- `GREATER_EQUAL` lebih besar atau sama dengan
-- `LESS_THAN` lebih kecil
-- `LESS_EQUAL` lebih kecil atau sama dengan
-- `IN` hanya yang di dalam
-- `NOT_IN` selain yang di dalam
-- `EQUAL` sama dengan
+- `ANY_LIKE` mengandung kalimat (huruf besar/kecil tidak wajib).
+- `ANY_START` dimulai dengan kalimat (huruf besar/kecil tidak wajib).
+- `ANY_END` diakhiri dengan kalimat (huruf besar/kecil tidak wajib).
+- `ANY_EQUAL` sama dengan kalimat (huruf besar/kecil tidak wajib).
+- `LIKE` mengandung kalimat.
+- `START` dimulai dengan kalimat.
+- `END` diakhiri dengan kalimat.
+- `NOT_ANY_LIKE` tidak mengandung kalimat (huruf besar/kecil tidak wajib).
+- `NOT_ANY_START` tidak dimulai dengan kalimat (huruf besar/kecil tidak wajib).
+- `NOT_ANY_END` tidak diakhiri dengan kalimat (huruf besar/kecil tidak wajib).
+- `NOT_ANY_EQUAL` tidak sama dengan kalimat (huruf besar/kecil tidak wajib).
+- `NOT_LIKE` tidak mengandung kalimat.
+- `NOT_START` tidak dimulai dengan kalimat.
+- `NOT_END` tidak diakhiri dengan kalimat.
+- `NOT_EQUAL` tidak sama dengan.
+- `BETWEEN` diantara, min - max.
+- `NOT_NULL` bukan null.
+- `IS_NULL` hanya yang null.
+- `GREATER_THAN` lebih besar.
+- `GREATER_EQUAL` lebih besar atau sama dengan.
+- `LESS_THAN` lebih kecil.
+- `LESS_EQUAL` lebih kecil atau sama .
+- `IN` hanya yang di dalam.
+- `NOT_IN` selain yang di dalam.
+- `EQUAL` sama dengan.
 
 ## Request
 
@@ -308,7 +304,10 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
 
 ## Screenshot
 
-<div align="center">
-   <img src="./images/crud.jpg" alt="CRUD" title="CRUD" width="800" />
+<div>
+   <img src="./assets/crud.jpg" alt="CRUD" title="CRUD" width="800" />
 </div>
 
+##
+
+### [Index](./index.md)

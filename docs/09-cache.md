@@ -25,21 +25,25 @@ CacheGroupHandler cacheGroupHandler(
 
 ``` md
 cache:
-      groups:
-         - name: TEST1
-           limit: 20
-           expiry: 3600
-           nullable: true
-         - name: TEST2
-           limit: -1
-           expiry: 0
-           nullable: true
+    groups:
+        - name: TEST1
+            limit: 20
+            expiry: 
+                unit: SECONDS
+                value: 3600
+            nullable: true
+        - name: TEST2
+            limit: -1
+            expiry: 
+                unit: SECONDS
+                value: 0
+            nullable: true
 ```
 
-* `name` nama group
-* `limit` maksimal jumlah key yang disimpan
-* `expiry` kadaluarsa dalam detik
-* `nullable` data null disimpan atau tidak
+* `name`: nama group.
+* `limit`: maksimal jumlah key yang disimpan, untuk unlimited diisi -1.
+* `expiry`: waktu kadaluarsa.
+* `nullable`: data null disimpan atau tidak.
 
 ## Single
 
@@ -64,6 +68,10 @@ CacheHandler cacheHandler(
 
 ## Screenshot
 
-<div align="center">
-   <img src="./images/cache.jpg" alt="Cache" title="Cache" width="800" />
+<div>
+   <img src="./assets/cache.jpg" alt="Cache" title="Cache" width="800" />
 </div>
+
+##
+
+### [Index](./index.md)

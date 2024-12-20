@@ -110,9 +110,8 @@ AdminSecurity adminSecurity(
 
 ## Controller
 
-### WebMvc
-
 ``` java
+// WebMvc
 @RestController
 @RequestMapping("/admin")
 class AdminController extends net.ideahut.springboot.admin.WebMvcAdminController {
@@ -133,11 +132,8 @@ class AdminController extends net.ideahut.springboot.admin.WebMvcAdminController
     } 
 
 }
-```
 
-### WebFlux
-
-``` java
+// WebFlux
 @RestController
 @RequestMapping("/admin")
 class AdminController extends net.ideahut.springboot.admin.WebFluxAdminController {
@@ -162,9 +158,8 @@ class AdminController extends net.ideahut.springboot.admin.WebFluxAdminControlle
 
 ## Static Resource
 
-### WebMvc
-
 ``` java
+// WebMvc
 @Configuration
 @EnableWebMvc
 class WebMvcConfig extends net.ideahut.springboot.config.WebMvcBasicConfig {
@@ -185,11 +180,8 @@ class WebMvcConfig extends net.ideahut.springboot.config.WebMvcBasicConfig {
        super.addResourceHandlers(registry);
     }
 }
-```
 
-### WebFlux
-
-``` java
+// WebFlux
 @Configuration
 @EnableWebFlux
 class WebFluxConfig extends net.ideahut.springboot.config.WebFluxBasicConfig {
@@ -214,9 +206,13 @@ class WebFluxConfig extends net.ideahut.springboot.config.WebFluxBasicConfig {
 
 ## Screenshot
 
-<div align="left">
-   <img src="./images/admin-01.jpg" alt="admin-01" title="admin-01" width="800" />
+<div>
+   <img src="./assets/admin-01.jpg" alt="admin-01" title="admin-01" width="800" />
 </div>
-<div align="left">
-   <img src="./images/admin-02.jpg" alt="admin-02" title="admin-02" width="800" />
+<div>
+   <img src="./assets/admin-02.jpg" alt="admin-02" title="admin-02" width="800" />
 </div>
+
+##
+
+### [Index](./index.md)

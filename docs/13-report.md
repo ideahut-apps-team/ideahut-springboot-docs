@@ -23,3 +23,7 @@ protected ReportHandler reportHandler() {
 * XML
 * JSON
 * HTML
+
+##
+
+### [Index](./index.md)

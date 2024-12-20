@@ -1,21 +1,22 @@
 # Filter
 
+Http request filter
+
 ## Bean
 
-### WebMvc
-
 ``` java
+// WebMvc
 @Bean
 FilterRegistrationBean<WebMvcRequestFilter> defaultRequestFilter(
     Environment environment,
     AppProperties appProperties,
     RequestMappingHandlerMapping handlerMapping
-) {  
-    return FrameworkUtil.createFilterBean(
+) { 
+    return WebMvcHelper.createFilterBean(
         environment,
         new WebMvcRequestFilter()
             .setHandlerMapping(handlerMapping)
-            .setCorsHeaders(appProperties.getCors())
+            .setCORSHeaders(appProperties.getCors())
             .setTraceEnable(true)
             .setEnableTimeResult(true)
             .initialize(), 
@@ -23,27 +24,30 @@ FilterRegistrationBean<WebMvcRequestFilter> defaultRequestFilter(
         "/*"
     );
 }
-```
 
-### WebFlux
-
-``` java
+// WebFlux
 @Bean
- WebFluxRequestFilter defaultRequestFilter(
+WebFluxRequestFilter defaultRequestFilter(
     AppProperties appProperties,
     RequestMappingHandlerMapping requestMappingHandlerMapping,
     RootRequestInterceptor rootRequestInterceptor,
     AdminRequestInterceptor adminRequestInterceptor
 ) {
     return new WebFluxRequestFilter()
-    .setCorsHeaders(appProperties.getCors())
+    .setCORSHeaders(appProperties.getCors())
     .setTraceEnable(true)
     .setAllowPaths("/**")
-    .setTraceEnable(true)
     .setHandlerMapping(requestMappingHandlerMapping)
     .setInterceptors(rootRequestInterceptor, adminRequestInterceptor);
 }
 ```
+
+- `setCORSHeaders`: CORS headers.
+- `setTraceEnable`: log MDC enable.
+- `setTraceGenerator`: log MDC trace id generator.
+- `setTraceKey`: key yang digunakan di log MDC.
+- `setEnableTimeResult`: informasi waktu eksekusi di response result.
+- `setAllowPaths`: path yang di-_filter_.
 
 ### CORS
 
@@ -57,10 +61,6 @@ cors:
     "Access-Control-Expose-Headers": "*"
 ```
 
-### Properties
+##
 
-* `corsHeaders` CORS headers
-* `traceEnable` log MDC enable
-* `traceGenerator` log MDC trace id generator
-* `traceKey` key yang digunakan di log MDC
-* `enableTimeResult` informasi waktu eksekusi di response result
+### [Index](./index.md)

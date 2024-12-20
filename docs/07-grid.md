@@ -1,8 +1,8 @@
 # Grid
 
-- Definisi UI untuk memproses [CRUD](./02-crud.md) dalam format json/xml
-- Aksi-aksi add, edit, delete juga didefinisikan
-- Contoh file [grid / template](03-grid.json)
+- Definisi UI untuk menampilkan [CRUD](./06-crud.md) dalam format json atau yaml.
+- Aksi-aksi add, edit, delete juga didefinisikan.
+- Contoh file [json](./assets/grid.json) atau [yaml](./assets/grid.yaml).
 
 ## Bean
 
@@ -18,11 +18,20 @@ GridHandler gridHandler(
     .setDataMapper(dataMapper)
     .setLocation(grid.getLocation())
     .setDefinition(grid.getDefinition())
+    .setMessageHandler(null)
     .setRedisTemplate(redisTemplate)
     .setAdditionals(GridSupport.getAdditionals())
     .setOptions(GridSupport.getOptions());
 }
 ```
+
+- `setDataMapper`: Data [Mapper](./02-mapper.md) bean.
+- `setLocation`: Directory lokasi file-file template grid.
+- `setDefinition`: File definisi order, title, dll yang akan ditampilakan di UI.
+- `setRedisTemplate`: [RedisTemplate](./14-redis.md) bean.
+- `setMessageHandler`: Untuk menerjemahkan judul, label, deskripsi, dll yang ada di template grid.
+- `setAdditionals`: Daftar array yang digunakan di template grid, contoh: DAYS, MONTHS, dll.
+- `setOptions`: Daftar option select ynag digunakan di template grid, contoh: GENDER, BOOLEAN, dll.
 
 ## Options
 
@@ -72,6 +81,10 @@ public static Map<String, GridAdditional> getAdditionals() {
 
 ## Screenshot
 
-<div align="center">
-   <img src="./images/grid.jpg" alt="Grid" title="Grid" width="800" />
+<div>
+   <img src="./assets/grid.jpg" alt="Grid" title="Grid" width="800" />
 </div>
+
+##
+
+### [Index](./index.md)

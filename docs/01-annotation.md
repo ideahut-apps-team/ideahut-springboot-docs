@@ -4,12 +4,10 @@ Daftar _annotation_ yang tersedia.
 
 ## @ApiExclude
 
-Penggunaan di entity/model (untuk crud endpoint), dan di controller (untuk request mapping).
-
-* Entity / Model bisa didaftarkan ke CRUD Resource atau tidak.
+Penggunaan di entity / model (CRUD endpoint), dan di controller (request mapping).
 
 ```java
-// Entity tidak disertakan ke CRUD Resource
+// Entity / Model tidak disertakan ke CRUD Resource
 @ApiExclude
 @Audit
 @Entity
@@ -21,16 +19,14 @@ public class ApiProvider extends EntityAudit {
     @Id
     @Column(name = "api_name", unique = true, nullable = false, length = 128)
     private String apiName;
- 
+
     @Column(name = "secret")
     private String secret;
 }
 ```
 
-* _Request mapping_ bisa di-set permission atau tidak.
-
 ```java
-// Semua request mapping di AdminController tidak di-set permission
+// Semua request mapping di Controller ini tidak disertakan ke API Resource
 @ApiExclude
 @ComponentScan
 @RestController
@@ -60,7 +56,7 @@ class AdminController extends WebMvcAdminController {
 
 ## @ApiSkip
 
-_Request mapping_ akan diproses oleh ApiService atau tidak.
+_Request mapping_ akan divalidasi oleh ApiService atau tidak.
 
 ```java
 @ApiSkip
@@ -88,7 +84,7 @@ public class User extends EntityAuditSoftDelete {
 
 ## @IdPrefix
 
-Menambah prefix ke id yang auto generated.
+Menambah prefix ke id yang _auto generated_.
 
 ``` java
 @Audit
@@ -102,6 +98,7 @@ public class User extends EntityAuditSoftDelete {
     private String userId;
 }
 ```
+
 Dari contoh di atas, jika id yang digenerate "abcd012989", maka yang tersimpan di table menjadi "USRabcd012989".
 
 ## @Login
@@ -132,8 +129,8 @@ public Result info() {
 
 ## @Body
 
-* Request body di-_consume_ di level filter atau controller (karena hanya bisa satu kali). Untuk stream request, sebaiknnya di-_consume_ di level controller.
-* Response body di-_produce_ oleh framework response writer atau manual di controller. Untuk stream response, sebaiknya di-_produce_ di level controller.
+* Request body di-_consume_ di level filter atau controller (hanya bisa di-_consume_ sekali). Untuk stream request, sebaiknnya di-_consume_ di level controller.
+* Response body di-_produce_ oleh _response writer_ atau manual di controller. Untuk stream response, sebaiknya di-_produce_ di level controller.
 
 ``` java
 // request body di-consume di controller
@@ -156,3 +153,35 @@ protected ResponseEntity<StreamingResponseBody> report(ServerHttpRequest request
    // send stream response
 }
 ```
+
+## @ForeignKeyEntity
+
+Alternatif jika entity / model tidak menggunakan @ManyToOne tapi foreign key tetap ingin didefinisikan. Ada kasus terjadi kegagalan pada saat mem-_build_ Native Image jika package entity berbeda dengan package aplikasi.
+
+``` java
+@Entity
+@Table(
+    name = "api_role_request",
+    indexes = {
+        @Index( name = "idx_api_role_request__api_role", columnList = "api_role_code"),
+    }
+)
+@ForeignKeyEntity(
+    name = "fk_api_role_request__api_role", 
+    referencedEntity = ApiRole.class, 
+    fieldJoins = { 
+        @ForeignKeyJoin(field = "apiRoleCode", referencedField = "apiRoleCode"),
+    },
+    onDeleteAction = ForeignKeyAction.CASCADE,
+    onUpdateAction = ForeignKeyAction.CASCADE
+)
+@Setter
+@Getter
+@SuppressWarnings("serial")
+public class ApiRoleRequest extends EntityAudit {
+}
+```
+
+##
+
+### [Index](./index.md)
