@@ -77,22 +77,6 @@ ApiAccessInternalService apiAccessInternalService(
 }
 ```
 
-## ApiConsumerService
-
-* Untuk melakukan request dari satu service ke service yang lain.
-
-``` java
-@Bean
-ApiConsumerService apiConsumerService(
-    DataMapper dataMapper,
-    WebMvcApiService apiService
-) {
-    return new ApiConsumerServiceImpl()
-    .setApiService(apiService)
-    .setDataMapper(dataMapper);
-}
-```
-
 ## ApiService
 
 * Meng-handle semua yang terkait dengan API CRUD dan Request Mapping.
@@ -152,18 +136,18 @@ WebMvcApiService apiService(
 
 ## Default HTTP Header
 
-* `Access-Token`: token access atau token consumer.
-* `Access-Type`: kode tipe ApiProcessor.
-* `Access-Signature`: signature untuk komunikasi antar service, hash-digest(secret + timestamp).
-* `Access-Timestamp`: timestamp dari service yang me-request.
-* `Access-ZoneOffset`: time zone offset dalam detik dari service yang me-request, contoh: GMT+7 = 25200.
-* `Access-From`: ApiName dari service yang me-request.
-* `Access-Data`: data tambahan dalam format json / xml.
+* `Api-Token`: token access atau token consumer.
+* `Api-Type`: kode tipe ApiProcessor.
+* `Api-Signature`: signature untuk komunikasi antar service, hash-digest(secret + timestamp).
+* `Api-Timestamp`: timestamp dari service yang me-request.
+* `Api-ZoneOffset`: time zone offset (bisa dalam detik ataupun kode) dari service yang me-request, contoh: bisa diisi GMT+7 atau 25200.
+* `Api-From`: ApiName dari service yang me-request.
+* `Api-Data`: data tambahan (bisa dalam format json / xml).
 
 ## ApiProcessor
 
 * Meng-_handle_ token access dan token consumer.
-* Untuk menambah custom processor dengan cara meng-extends class 'net.ideahut.springboot.api.ApiProcessor' dan gunakan ApiType yang belum terpakai.
+* Untuk menambah processor lain, dengan cara meng-extends class 'net.ideahut.springboot.api.ApiProcessor' dan gunakan ApiType yang belum terpakai.
 * Daftar default ApiProcessor bisa dilihat di table di di bawah (validasi berdasarkan User-Agent & Remote-Host pada saat token dibuat).
 
 ||ApiType|Token Header|Scheme|User Agent|Remote Host|

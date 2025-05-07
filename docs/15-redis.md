@@ -22,7 +22,6 @@ RedisTemplate<String, byte[]> commonRedis() throws Exception {
 ``` md
 common:
     type: 0
-    testOnStartup: true
     standalone:
         host: 127.0.0.1
         port: 6379

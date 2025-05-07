@@ -1,7 +1,7 @@
 # CRUD
 
-- Secara otomatis semua entity / model yang terdeteksi oleh [EntityTrxManager](./04-entity.md) dapat diakses menggunakan modul ini.
-- Untuk membatasi akses dapat dipasangkan dengan ApiRole (lihat: modul [API](./17-api.md)).
+- Secara otomatis semua entity / model yang terdeteksi oleh [EntityTrxManager](./05-entity.md) dapat diakses menggunakan modul ini.
+- Untuk membatasi akses dapat dipasangkan dengan ApiRole (lihat: modul [API](./18-api.md)).
 
 ## Bean
 
@@ -59,7 +59,7 @@ CrudResource crudResource(
     WebMvcApiService apiService
 ) {
     return (manager, name) -> {
-        ApiAccess apiAccess = RequestContext.currentContext().getAttribute(ApiAccess.CONTEXT);
+        ApiAccess apiAccess = ApiAccess.fromContext();;
         CrudProperties properties = apiService.getApiCrudProperties(apiAccess, name);
         Assert.notNull(properties, "CrudProperties is not found: " + name);
         return properties;
@@ -176,7 +176,8 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
 - `limit` batas jumlah data.
 - `filters` array filter.
 - `orders` array order (descending dimulai dengan karakter '-').
-- `fields` spesifik field yang ditampilkan.
+- `fields` daftar field yang ditampilkan.
+- `excludes` daftar field yang tidak ditampilkan.
 - `loads` daftar field yang datanya diambil dari entity lain (Lazy Load).
 - `values` array value, untuk insert & update.
 - `joins` array join dengan entity lain.

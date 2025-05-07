@@ -2,6 +2,27 @@
 
 Modul untuk mengirim email.
 
+``` java
+public interface MailHandler {
+	void send(MailObject mailObject) throws Exception;	
+	void send(MailObject mailObject, boolean asynchronous) throws Exception;
+}
+
+public class MailObject {
+	private InternetAddress from;	
+	private InternetAddress[] to;	
+	private InternetAddress[] cc;	
+	private InternetAddress[] bcc;	
+	private String subject;	
+	private String plainText;
+	private String htmlText;
+	private Inline[] inline;
+	private Attachment[] attachment;
+	private boolean multipart = false;
+	private String encoding = "UTF-8";
+}
+```
+
 ## Bean
 
 ``` java

@@ -1,8 +1,16 @@
 # Grid
 
-- Definisi UI untuk menampilkan [CRUD](./06-crud.md) dalam format json atau yaml.
+- Definisi _user interface (UI)_ untuk menampilkan [CRUD](./07-crud.md) dalam format json atau yaml.
 - Aksi-aksi add, edit, delete juga didefinisikan.
 - Contoh file [json](./assets/grid.json) atau [yaml](./assets/grid.yaml).
+
+``` java
+public interface GridHandler {
+	List<GridParent> getTree();
+	JsonNode getGrid(String parent, String name);
+	void translate(JsonNode grid);
+}
+```
 
 ## Bean
 
@@ -25,10 +33,10 @@ GridHandler gridHandler(
 }
 ```
 
-- `setDataMapper`: Data [Mapper](./02-mapper.md) bean.
+- `setDataMapper`: [Data Mapper](./02-mapper.md) bean.
 - `setLocation`: Directory lokasi file-file template grid.
 - `setDefinition`: File definisi order, title, dll yang akan ditampilakan di UI.
-- `setRedisTemplate`: [RedisTemplate](./14-redis.md) bean.
+- `setRedisTemplate`: [RedisTemplate](./15-redis.md) bean.
 - `setMessageHandler`: Untuk menerjemahkan judul, label, deskripsi, dll yang ada di template grid.
 - `setAdditionals`: Daftar array yang digunakan di template grid, contoh: DAYS, MONTHS, dll.
 - `setOptions`: Daftar option select ynag digunakan di template grid, contoh: GENDER, BOOLEAN, dll.

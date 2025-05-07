@@ -56,7 +56,7 @@ class AdminController extends WebMvcAdminController {
 
 ## @ApiSkip
 
-_Request mapping_ akan divalidasi oleh ApiService atau tidak.
+_Request mapping_ akan divalidasi oleh ApiService atau tidak (ApiSecurity akan dilewati)
 
 ```java
 @ApiSkip
@@ -68,7 +68,7 @@ ApiAccess access(HttpServletRequest request) {
 
 ## @Audit
 
-Untuk mengidentifikasi suatu entity/model bisa diaudit setiap perubahannya.
+Untuk mengidentifikasi suatu entity/model akan diaudit setiap perubahannya (CREATE / UPDATE / DELETE).
 
 ``` java
 @Audit
@@ -129,8 +129,8 @@ public Result info() {
 
 ## @Body
 
-* Request body di-_consume_ di level filter atau controller (hanya bisa di-_consume_ sekali). Untuk stream request, sebaiknnya di-_consume_ di level controller.
-* Response body di-_produce_ oleh _response writer_ atau manual di controller. Untuk stream response, sebaiknya di-_produce_ di level controller.
+* Request body di-_consume_ di level filter atau controller (karena body request hanya bisa di-_consume_ sekali). Untuk stream request, sebaiknnya di-_consume_ di level controller.
+* Response body di-_produce_ oleh _response writer_ atau manual di controller. Untuk stream response, sebaiknya di-_produce_ secara manual di level controller.
 
 ``` java
 // request body di-consume di controller
@@ -156,7 +156,7 @@ protected ResponseEntity<StreamingResponseBody> report(ServerHttpRequest request
 
 ## @ForeignKeyEntity
 
-Alternatif jika entity / model tidak menggunakan @ManyToOne tapi foreign key tetap ingin didefinisikan. Ada kasus terjadi kegagalan pada saat mem-_build_ Native Image jika package entity berbeda dengan package aplikasi.
+Alternatif jika entity / model tidak menggunakan @ManyToOne tapi foreign key tetap ingin didefinisikan. Ada kasus terjadi kegagalan pada saat mem-_build_ Native Image jika package entity (yang punya @ManyToOne) berbeda dengan package aplikasi.
 
 ``` java
 @Entity

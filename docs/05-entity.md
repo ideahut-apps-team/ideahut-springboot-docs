@@ -2,7 +2,7 @@
 
 * Mengumpulkan informasi semua entity / model dari _Transaction Manager_ yang ada (bisa lebih dari satu _Transaction Manager_).
 * Dapat digunakan untuk transaksi tanpa menggunakan DAO _Repository_.
-* Digunakan di [CRUD](./06-crud.md), [Audit](./08-audit.md), & [Grid](./07-grid.md).
+* Digunakan di [CRUD](./07-crud.md), [Audit](./09-audit.md), & [Grid](./08-grid.md).
 * Mendukung hibernate query (hql) maupun native query (sql).
 * Mendukung _replica_ (satu entity dimapping ke banyak table), contoh: entity User di-_mapping_ ke table user_1, user_2, user_3, dst.
 
@@ -10,13 +10,42 @@
 
 ``` java
 @Bean
-EntityTrxManager entityTrxManager() {
+EntityTrxManager entityTrxManager(
+    AppProperties appProperties
+) {
     return new EntityTrxManagerImpl()
-    //.setApiExcludeParams()
-    //.setAuditParams()
-    //.setEntityListenerParam()
-    //.setForeignKeyParam()
-    ;
+    
+    // Entity / Model yang tidak memiliki anotasi @ApiExclude, dan tidak ingin dipublikasikan oleh ApiService
+    .setApiExcludeParams(
+        new EntityApiExcludeParam()
+        .addEntityClasses(ApiConfigHelper.getApiExcludeEntities())
+        .addEntityClasses(JobConfigHelper.getApiExcludeEntities())
+        .addEntityClasses(
+            SysParam.class,
+            Language.class,
+            Message.class
+        )
+    )
+    
+    // Entity / Model yang tidak memiliki anotasi @Audit, dan ingin setiap perubahannya disimpan
+    .setAuditParams(
+        new EntityAuditParam()
+        .addEntityClasses(ApiConfigHelper.getAuditEntities())
+        .addEntityClasses(JobConfigHelper.getAuditEntities())
+        .addEntityClasses(
+            SysParam.class,
+            Language.class,
+            Message.class
+        )
+    )
+    
+    // Daftar EntityPreListener & EntityPostListener, default autodetect = true
+    .setEntityListenerParam(null)
+    
+    // Parameter untuk menghandle anotasi @ForeignKeyEntity
+    // Ini solusi jika terjadi error saat membuat native image dimana entity memiliki @ManyToOne & @OneToMany
+    // tapi package-nya berbeda dengan package project (error ByteCodeProvider saat runtime)
+    .setForeignKeyParam(appProperties.getForeignKey());
 }
 ```
 
@@ -85,7 +114,7 @@ User user = trxManagerInfo.transaction(new SessionCallable<User>() {
 ## PreListener
 
 Listener sebelum entity mengalami perubahan (INSERT, UPDATE, & DELETE).
-Contoh penggunaan di [cache](./09-cache.md), untuk membuang data yang tersimpan di memori.
+Contoh penggunaan di [cache](./10-cache.md), untuk membuang data yang tersimpan di memori.
 
 ``` java
 public interface EntityPreListener { 
@@ -98,7 +127,7 @@ public interface EntityPreListener {
 ## PostListener
 
 Listener setelah entity mengalami perubahan (INSERT, UPDATE, & DELETE).
-Contoh penggunaan di [audit](./08-audit.md), untuk menyimpan data perubahan ke audit handler.
+Contoh penggunaan di [audit](./09-audit.md), untuk menyimpan data perubahan ke audit handler.
 
 ``` java
 public interface EntityPostListener {

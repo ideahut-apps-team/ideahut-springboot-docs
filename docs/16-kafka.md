@@ -1,5 +1,21 @@
 # Kafka
 Untuk meng-_handle_ producer dan consumer kafka.
+
+```java
+public interface KafkaHandler {
+	KafkaProperties getProperties();
+	BinarySerializer getBinarySerializer();
+	
+	// INTERNAL
+	<K, V> KafkaSender<K, V> getSender(String topic);
+	<K, V, R> ReplyKafkaSender<K, V, R> getReplySender(String topic);
+	
+	// DYNAMIC
+	<K, V> KafkaSender<K, V> createSender(String topic);
+	<K, V, R> ReplyKafkaSender<K, V, R> createReplySender(String topic);
+}
+```
+
 ## Bean
 
 ``` java

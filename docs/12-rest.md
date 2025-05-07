@@ -2,6 +2,17 @@
 
 Http client untuk request ke server.
 
+``` java
+public interface RestHandler {
+	RestResponse call(RestClient restClient, RestRequest restRequest);
+	RestResponse call(RestRequest restRequest);
+	List<RestResponse> call(RestClient restClient, List<RestRequest> restRequests);
+	List<RestResponse> call(List<RestRequest> restRequests);
+	Map<String, RestResponse> call(RestClient restClient, Map<String, RestRequest> restRequests);
+	Map<String, RestResponse> call(Map<String, RestRequest> restRequests);
+}
+```
+
 ## Bean
 
 ``` java
@@ -49,11 +60,11 @@ RestHandler restHandler(
 ```
 
 - `setClientDestroyable`: Http client di-_close_ atau tidak setelah proses selesai.
-- `setDataMapper`: Data [Mapper](./02-mapper.md) bean.
+- `setDataMapper`: [Data Mapper](./02-mapper.md) bean.
 - `setDefaultRestClient`: Konfigurasi default http client.
 - `setEnableExecutionTime`: Waktu eksekusi disertakan di respons atau tidak.
 - `setEnableRequestLimit`: Jumlah request secara bersamaan dibatasi atau tidak. Terkait dengan jumlah port yang digunakan oleh http client pada saat request ke server.
-- `setTaskHandler`: [Task handler](./10-task.md), untuk membatasi jumlah request secara bersamaan.
+- `setTaskHandler`: [Task handler](./11-task.md), untuk membatasi jumlah request secara bersamaan.
 
 ##
 

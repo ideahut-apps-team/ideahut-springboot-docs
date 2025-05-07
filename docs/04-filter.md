@@ -11,14 +11,19 @@ FilterRegistrationBean<WebMvcRequestFilter> defaultRequestFilter(
     Environment environment,
     AppProperties appProperties,
     RequestMappingHandlerMapping handlerMapping
-) { 
+) {	
+    FilterDefinition filter = ObjectHelper.useOrDefault(
+        appProperties.getFilter(), 
+        FilterDefinition::new
+    );
     return WebMvcHelper.createFilterBean(
         environment,
         new WebMvcRequestFilter()
+            .setCorsHeaders(filter.getCorsHeaders())
+            .setEnableTimeResult(filter.getEnableTimeResult())
             .setHandlerMapping(handlerMapping)
-            .setCORSHeaders(appProperties.getCors())
-            .setTraceEnable(true)
-            .setEnableTimeResult(true)
+            .setTraceEnable(filter.getTraceEnable())
+            .setTraceKey(filter.getTraceKey())
             .initialize(), 
         1, 
         "/*"
@@ -33,17 +38,23 @@ WebFluxRequestFilter defaultRequestFilter(
     RootRequestInterceptor rootRequestInterceptor,
     AdminRequestInterceptor adminRequestInterceptor
 ) {
+    FilterDefinition filter = ObjectHelper.useOrDefault(
+        appProperties.getFilter(), 
+        FilterDefinition::new
+    );
     return new WebFluxRequestFilter()
-    .setCORSHeaders(appProperties.getCors())
-    .setTraceEnable(true)
+    .setCorsHeaders(filter.getCorsHeaders())
+    .setEnableTimeResult(filter.getEnableTimeResult())
+    .setTraceEnable(filter.getTraceEnable())
+    .setTraceKey(filter.getTraceKey())
     .setAllowPaths("/**")
     .setHandlerMapping(requestMappingHandlerMapping)
     .setInterceptors(rootRequestInterceptor, adminRequestInterceptor);
 }
 ```
 
-- `setCORSHeaders`: CORS headers.
-- `setTraceEnable`: log MDC enable.
+- `setCorsHeaders`: CORS headers.
+- `setTraceEnable`: log MDC diaktifkan atau tidak.
 - `setTraceGenerator`: log MDC trace id generator.
 - `setTraceKey`: key yang digunakan di log MDC.
 - `setEnableTimeResult`: informasi waktu eksekusi di response result.

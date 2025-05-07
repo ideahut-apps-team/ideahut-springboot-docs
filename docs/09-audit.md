@@ -4,6 +4,18 @@ Untuk menyimpan perubahan data entity / model.
 Akan disimpan tanggal perubahan, pengubah/user, aksi (INSERT / UPDATE / DELETE), dan data perubahan.
 Proses penyimpanan dilakukan asinkronus.
 
+``` java
+public interface AuditHandler {
+	void save(String action, Object object);
+	
+	AuditRequest getRequest(byte[] data);
+	Page getList(AuditRequest auditRequest);
+	byte[] getBytes(String manager, String id);
+	
+	Map<String, AuditAccessible> getAccessibles();
+}
+```
+
 ## Multi
 
 Semua table entity (yang ada anotasi @Audit) akan diduplikat, ditambah dengan field tanggal (entry), pengubah (actor), informasi tambahan (info), dan aksi (action).

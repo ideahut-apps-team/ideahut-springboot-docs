@@ -2,6 +2,18 @@
 
 Task Executor dan proses asinkronus.
 
+``` java
+public interface TaskHandler {
+	Map<String, TaskResult> submit(Map<String, Callable<?>> callables, TimeValue timeout);
+	Map<String, TaskResult> submit(Map<String, Callable<?>> callables);	
+	List<TaskResult> submit(List<Callable<?>> callables, TimeValue timeout);
+	List<TaskResult> submit(List<Callable<?>> callables);
+	<T> Future<T> submit(Callable<T> callable);
+	void execute(Collection<Runnable> tasks);
+	void execute(Runnable task);
+}
+```
+
 ## Bean
 
 ``` java
