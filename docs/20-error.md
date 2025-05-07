@@ -55,3 +55,7 @@ Daftar kode dan teks kesalahan.
 |:---:|:---|
 |ADM-00|User not found|
 |ADM-01|User not allowed|
+
+##
+
+### [Index](./index.md)
