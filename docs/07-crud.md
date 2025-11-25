@@ -41,7 +41,16 @@ CrudHandler crudHandler(
     
     // Daftar filter specific yang akan disertakan saat query
     // Contoh penggunaan, hanya menampilkan data yang terkait dengan user yang login
-    .setSpecificValueGetters(CrudSupport.getSpecificValueGetters());
+    .setSpecificValueGetters(CrudSupport.getSpecificValueGetters())
+
+    // Flag apakah bulk diaktifkan atau tidak
+    .setBulkEnabled(crud.getBulkEnabled())
+    
+    // Maksimum jumlah operasi / aksi CRUD yang dibolehkan, diisi 0 untuk tak terbatas
+    .setMaxBulkSize(crud.getMaxBulkSize())
+    
+    // Maksimum jumlah dependensi / layer CRUD yang dibolehkan, diisi 0 untuk tak terbatas
+    .setMaxBulkLayer(crud.getMaxBulkLayer());
     
 }}
 
@@ -52,7 +61,7 @@ CrudResource crudResource(
 ) {
     return new CrudResource() {
         @Override
-        public CrudProps getCrudProps(String manager, String name) {
+        public CrudProperties getCrudProperties(String manager, String name) {
             try {
                 Class<?> clazz = ObjectHelper.classOf(EntityFill.class.getPackageName() + "." + name);
                 TrxManagerInfo trxManagerInfo = entityTrxManager.getDefaultTrxManagerInfo();
@@ -60,13 +69,13 @@ CrudResource crudResource(
                     trxManagerInfo = entityTrxManager.getTrxManagerInfo(manager);
                 }
                 EntityInfo entityInfo = trxManagerInfo.getEntityInfo(clazz);
-                CrudProps resource = new CrudProps();
-                resource.setEntityInfo(entityInfo);
-                resource.setMaxLimit(200);
-                resource.setUseNative(false);
-                return resource;
+                CrudProperties properties = new CrudProperties();
+                properties.setEntityInfo(entityInfo);
+                properties.setMaxLimit(200);
+                properties.setUseNative(false);
+                return properties;
             } catch (Exception e) {
-                throw FrameworkUtil.exception(e);
+                throw ErrorHelper.exception(e);
             }
         }
     };
@@ -118,6 +127,18 @@ class CrudController extends net.ideahut.springboot.crud.WebMvcCrudController {
         byte[] data = WebMvcHelper.getBodyAsBytes(request);
         return super.body(CrudAction.valueOf(action.toUpperCase()), data);
     }
+
+    @PostMapping(value = "/bulk/list")
+    List<Result> bulkList(HttpServletRequest httpRequest) throws Exception {
+		byte[] data = WebMvcHelper.getBodyAsBytes(httpRequest);
+		return super.bulkList(data);
+	}
+
+    @PostMapping(value = "/bulk/map")
+	Map<String, Result> bulkMap(HttpServletRequest httpRequest) throws Exception {
+		byte[] data = WebMvcHelper.getBodyAsBytes(httpRequest);
+		return super.bulkMap(data);
+	}
 }
 
 // WebFlux
@@ -135,6 +156,26 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
 		.flatMap(bytes -> {
 			Result result = super.body(CrudAction.valueOf(action.toUpperCase()), bytes);
 			return Mono.just(result);
+		});
+	}
+
+    @PostMapping(value = "/bulk/list")
+	Mono<List<Result>> bulkList(ServerHttpRequest httpRequest) {
+		return WebFluxHelper
+		.onRequestBody(httpRequest)
+		.flatMap(bytes -> {
+            List<Result> list = super.bulkList(bytes);
+			return Mono.just(list);
+		});
+	}
+
+    @PostMapping(value = "/bulk/map")
+	Mono<Map<String, Result>> bulkList(ServerHttpRequest httpRequest) {
+		return WebFluxHelper
+		.onRequestBody(httpRequest)
+		.flatMap(bytes -> {
+            Map<String, Result> map = super.bulkMap(bytes);
+			return Mono.just(map);
 		});
 	}
 }
@@ -201,11 +242,17 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
 - `joins` array join dengan entity lain.
 - `stacks` array stack, proses bertingkat. Contoh: setelah user disimpan, bisa dilanjutkan dengan menyimpan data detail atau otentikasi.
 
+## Bulk
+- Untuk mengeksekusi banyak aksi CRUD dalam satu kali request.
+- Mendukung suatu aksi akan dieksekusi ketika aksi lain sudah selesai prosesnya (bertingkat).
+
+
 ### Page
 
 ``` js
+// Request
 {
-    "name": "AutoGenStrIdHardDel",
+    "name": "app.AutoGenStrIdHardDel",
     "page": {
         "index": 1,
         "size": 10,
@@ -219,15 +266,45 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
         {
             "field": "date",
             "condition": "BETWEEN",
-            "values": ["2025-01-01 00:00:00", "2025-01-31 23:59:59"]
+            "values": ["2024-01-01 00:00:00", "2024-01-31 23:59:59"]
         }
     ],
     "orders":["-createdOn"]
 }
-
-// Contoh menggunakan replica
+// Response
 {
-    "name": "Information",
+    "time": 82150375,
+    "status": 0,
+    "info": {
+        "action": "PAGE",
+        "manager": "mainTransactionManager",
+        "name": "app.AutoGenStrIdHardDel"
+    },
+    "data": {
+        "index": 1,
+        "size": 10,
+        "total": 1,
+        "records": 1,
+        "count": true,
+        "data": [
+            {
+                "createdOn": 1763717045176,
+                "updatedOn": 1763717045176,
+                "id": "2025-411216-1624-05174-25200-0001",
+                "name": "COBA",
+                "description": "description",
+                "isActive": "Y",
+                "date": "2024-01-02 18:43:24",
+                "condition": "ANY_LIKE"
+            }
+        ]
+    }
+}
+
+## Contoh menggunakan replica
+// Request (replica = 1)
+{
+    "name": "app.Information",
     "replica": 1,
     "page": {
         "index": 1,
@@ -236,17 +313,77 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
     },
     "orders":["-createdOn"]
 }
+// Response (replica = 1)
+{
+    "time": 68235208,
+    "status": 0,
+    "info": {
+        "action": "PAGE",
+        "manager": "mainTransactionManager",
+        "name": "app.Information"
+    },
+    "data": {
+        "index": 1,
+        "size": 100,
+        "total": 1,
+        "records": 1,
+        "count": true,
+        "data": [
+            {
+                "createdOn": 1764043087781,
+                "updatedOn": 1764043087781,
+                "informationId": "INF2025-411253-1058-07774-25200-0000",
+                "title": "admin",
+                "image": "A",
+                "description": "description",
+                "content": "So, you'll think that something is wrong with the mapping - and thats right! It seems like Hibernate maps LOBs to OIDs unless others specified. Duh..",
+                "isExternal": "N",
+                "isActive": "Y",
+                "seqno": 1
+            }
+        ]
+    }
+}
+// Request (replica = 2)
+{
+    "name": "app.Information",
+    "replica": 2,
+    "page": {
+        "index": 1,
+        "size": 100,
+        "count": true
+    },
+    "orders":["-createdOn"]
+}
+// Response (replica = 2)
+{
+    "time": 69575250,
+    "status": 0,
+    "info": {
+        "action": "PAGE",
+        "manager": "mainTransactionManager",
+        "name": "app.Information"
+    },
+    "data": {
+        "index": 1,
+        "size": 100,
+        "total": 0,
+        "records": 0,
+        "count": true
+    }
+}
 ```
 
 ### Map
 
 ``` js
+// Request
 {
-    "name": "AutoGenStrIdHardDel",
+    "name": "app.AutoGenStrIdHardDel",
     "start": 0,
     "limit": 10,
     "map": {
-        "keys": ["id", "name"],
+        "keys": ["id"],
         "flat": true
     },
     "filters": [
@@ -258,27 +395,91 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
     "orders":["-createdOn"]
 
 }
+// Response
+{
+    "time": 48872709,
+    "status": 0,
+    "info": {
+        "action": "MAP",
+        "manager": "mainTransactionManager",
+        "name": "app.AutoGenStrIdHardDel"
+    },
+    "data": {
+        "id:2025-411216-1624-05174-25200-0001": {
+            "createdOn": 1763717045176,
+            "updatedOn": 1763717045176,
+            "id": "2025-411216-1624-05174-25200-0001",
+            "name": "COBA",
+            "description": "description",
+            "isActive": "Y",
+            "date": "2024-01-02 18:43:24",
+            "condition": "ANY_LIKE"
+        }
+    }
+}
 ```
 
 ### Unique
 
 ``` js
+// Request
 {
-    "name": "AutoGenStrIdHardDel",
-    "id": "2024-102085-1930-22404-25200-0000"
+    "name": "app.AutoGenStrIdHardDel",
+    "id": "2025-411216-1624-05174-25200-0001"
+}
+// Response
+{
+    "time": 41023458,
+    "status": 0,
+    "info": {
+        "action": "UNIQUE",
+        "manager": "mainTransactionManager",
+        "name": "app.AutoGenStrIdHardDel"
+    },
+    "data": {
+        "createdOn": 1763717045176,
+        "updatedOn": 1763717045176,
+        "id": "2025-411216-1624-05174-25200-0001",
+        "name": "COBA",
+        "description": "description",
+        "isActive": "Y",
+        "date": "2024-01-02 18:43:24",
+        "condition": "ANY_LIKE"
+    }
 }
 ```
 
 ### Create
 
 ``` js
+// Request
 {
-    "name": "AutoGenStrIdHardDel",
+    "name": "app.AutoGenStrIdHardDel",
     "value": {
         "name": "COBA",
         "isActive": "Y",
         "description": "description",
-        "date": "2024-01-02 18:43:24",
+        "date": "2025-11-25 18:43:24",
+        "condition": "ANY_LIKE"
+    }
+}
+// Response
+{
+    "time": 62282041,
+    "status": 0,
+    "info": {
+        "action": "CREATE",
+        "manager": "mainTransactionManager",
+        "name": "app.AutoGenStrIdHardDel"
+    },
+    "data": {
+        "createdOn": 1764044505853,
+        "updatedOn": 1764044505853,
+        "id": "2025-411253-1121-45852-25200-0019",
+        "name": "COBA",
+        "description": "description",
+        "isActive": "Y",
+        "date": "2025-11-25 18:43:24",
         "condition": "ANY_LIKE"
     }
 }
@@ -287,13 +488,33 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
 ### Update
 
 ``` js
+// Request
 {
-    "name": "AutoGenStrIdHardDel",
-    "id": "2024-102107-1544-16584-25200-0001",
+    "name": "app.AutoGenStrIdHardDel",
+    "id": "2025-411253-1121-45852-25200-0019",
     "value": {
-        "name": "yyyyyTest (Edited)",
+        "name": "yyyyyTest (Edited)--",
         "description": null,
-        "date": "2024-01-03 18:00:02",
+        "date": "2025-11-30 18:00:02",
+        "condition": "BETWEEN"
+    }
+}
+// Response
+{
+    "time": 44078625,
+    "status": 0,
+    "info": {
+        "action": "UPDATE",
+        "manager": "mainTransactionManager",
+        "name": "app.AutoGenStrIdHardDel"
+    },
+    "data": {
+        "createdOn": 1764044505853,
+        "updatedOn": 1764044611933,
+        "id": "2025-411253-1121-45852-25200-0019",
+        "name": "yyyyyTest (Edited)--",
+        "isActive": "Y",
+        "date": "2025-11-30 18:00:02",
         "condition": "BETWEEN"
     }
 }
@@ -302,22 +523,469 @@ class CrudController extends net.ideahut.springboot.crud.WebFluxCrudController {
 ### Delete
 
 ``` js
+// Request
 {
-    "name": "AutoGenStrIdHardDel",
-    "id": "2024-102037-1717-17536-25200-0001"
+    "name": "app.AutoGenStrIdHardDel",
+    "id": "2025-411253-1121-44949-25200-0018"
+}
+// Response
+{
+    "time": 82880958,
+    "status": 0,
+    "info": {
+        "action": "DELETE",
+        "manager": "mainTransactionManager",
+        "name": "app.AutoGenStrIdHardDel"
+    },
+    "data": {
+        "createdOn": 1764044504953,
+        "updatedOn": 1764044504953,
+        "id": "2025-411253-1121-44949-25200-0018",
+        "name": "COBA",
+        "description": "description",
+        "isActive": "Y",
+        "date": "2025-11-25 18:43:24",
+        "condition": "ANY_LIKE"
+    }
 }
 ```
 
 ### Deletes
 
 ``` js
+// Request
 {
-    "name": "AutoGenStrIdHardDel",
+    "name": "app.AutoGenStrIdHardDel",
     "ids": [
-        "2024-204067-1553-20523-25200-0000",
-        "2024-101056-1708-46195-25200-0001",
-        "2024-101056-1711-09428-25200-0002"
+        "2025-411253-1121-41518-25200-0015",
+        "2025-411253-1121-42583-25200-0016",
+        "2025-411253-1121-44042-25200-0017"
     ]
+}
+// Response
+{
+    "time": 160827584,
+    "status": 0,
+    "info": {
+        "action": "DELETES",
+        "manager": "mainTransactionManager",
+        "name": "app.AutoGenStrIdHardDel"
+    },
+    "data": [
+        {
+            "createdOn": 1764044501525,
+            "updatedOn": 1764044501525,
+            "id": "2025-411253-1121-41518-25200-0015",
+            "name": "COBA",
+            "description": "description",
+            "isActive": "Y",
+            "date": "2025-11-25 18:43:24",
+            "condition": "ANY_LIKE"
+        },
+        {
+            "createdOn": 1764044502586,
+            "updatedOn": 1764044502586,
+            "id": "2025-411253-1121-42583-25200-0016",
+            "name": "COBA",
+            "description": "description",
+            "isActive": "Y",
+            "date": "2025-11-25 18:43:24",
+            "condition": "ANY_LIKE"
+        },
+        {
+            "createdOn": 1764044504044,
+            "updatedOn": 1764044504044,
+            "id": "2025-411253-1121-44042-25200-0017",
+            "name": "COBA",
+            "description": "description",
+            "isActive": "Y",
+            "date": "2025-11-25 18:43:24",
+            "condition": "ANY_LIKE"
+        }
+    ]
+}
+```
+
+### Bulk (List)
+``` js
+// Request
+[
+    {
+        "action": "save",
+        "name": "app.CompositeHardDel",
+        "value": {
+            "type": 1,
+            "code": "A",
+            "name": "COBA",
+            "isActive": "Y",
+            "description": "description"
+        }
+    },
+    {
+        "action": "create",
+        "after": 0,
+        "name": "app.LongIdJoinComposite",
+        "value": {
+            "name": "COBA",
+            "isActive": "Y",
+            "description": "description",
+            "composite": {
+                "type": "{[0].type}",
+                "code": "{[0].code}"
+            }
+        }
+    },
+    {
+        "action": "page",
+        "after": 0,
+        "name": "app.CompositeHardDel",
+        "page": {
+            "index": 1,
+            "size": 1,
+            "count": false
+        },
+        "filters": [
+            {
+                "field": "name",
+                "condition": "NOT_null"
+            }       
+        ],
+        "orders":["-createdOn"]
+    },
+    {
+        "action": "page",
+        "after": 1,
+        "name": "app.LongIdJoinComposite",
+        "page": {
+            "index": 1,
+            "size": 1,
+            "count": false
+        },
+        "joins": [
+            {
+                "name": "app.CompositeHardDel",
+                "store": "composite",
+                "relations": [
+                    {
+                        "target": "type",
+                        "value": "{[0].type}"
+                    },
+                    {
+                        "target": "code",
+                        "value": "{[0].code}"
+                    }
+                ]
+            }
+        ],
+        "filters": [
+            {
+                "field": "name",
+                "condition": "NOT_NULL"
+            }   
+        ],
+        "orders":["-createdOn"]
+    }
+]
+// Response
+{
+    "time": 184308166,
+    "status": 0,
+    "data": [
+        {
+            "time": 53422916,
+            "status": 0,
+            "info": {
+                "action": "SAVE",
+                "manager": "mainTransactionManager",
+                "name": "app.CompositeHardDel"
+            },
+            "data": {
+                "createdOn": 1764045165036,
+                "updatedOn": 1764045165036,
+                "type": 1,
+                "code": "A",
+                "name": "COBA",
+                "description": "description",
+                "isActive": "Y"
+            }
+        },
+        {
+            "time": 118973958,
+            "status": 0,
+            "info": {
+                "action": "CREATE",
+                "manager": "mainTransactionManager",
+                "name": "app.LongIdJoinComposite"
+            },
+            "data": {
+                "createdOn": 1764045205486,
+                "updatedOn": 1764045205486,
+                "id": 67,
+                "name": "COBA",
+                "description": "description",
+                "isActive": "Y",
+                "composite": {
+                    "type": 1,
+                    "code": "A"
+                }
+            }
+        },
+        {
+            "time": 100862791,
+            "status": 0,
+            "info": {
+                "action": "PAGE",
+                "manager": "mainTransactionManager",
+                "name": "app.CompositeHardDel"
+            },
+            "data": {
+                "index": 1,
+                "size": 1,
+                "count": false,
+                "data": [
+                    {
+                        "createdOn": 1764045165036,
+                        "updatedOn": 1764045165036,
+                        "type": 1,
+                        "code": "A",
+                        "name": "COBA",
+                        "description": "description",
+                        "isActive": "Y"
+                    }
+                ]
+            }
+        },
+        {
+            "time": 170593208,
+            "status": 0,
+            "info": {
+                "action": "PAGE",
+                "manager": "mainTransactionManager",
+                "name": "app.LongIdJoinComposite"
+            },
+            "data": {
+                "index": 1,
+                "size": 1,
+                "count": false,
+                "data": [
+                    {
+                        "createdOn": 1764045205486,
+                        "updatedOn": 1764045205486,
+                        "id": 67,
+                        "name": "COBA",
+                        "description": "description",
+                        "isActive": "Y",
+                        "composite": {
+                            "createdOn": 1764045165036,
+                            "updatedOn": 1764045165036,
+                            "type": 1,
+                            "code": "A",
+                            "name": "COBA",
+                            "description": "description",
+                            "isActive": "Y"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+```
+
+### Bulk (Map)
+``` js
+// Request
+{
+    "CompositeHardDel-Save":
+    {
+        "action": "save",
+        "name": "app.CompositeHardDel",
+        "value": {
+            "type": 1,
+            "code": "A",
+            "name": "COBA",
+            "isActive": "Y",
+            "description": "description"
+        }
+    },
+    "LongIdJoinComposite-Create":
+    {
+        "action": "create",
+        "after": "CompositeHardDel-Save",
+        "name": "app.LongIdJoinComposite",
+        "value": {
+            "name": "COBA",
+            "isActive": "Y",
+            "description": "description",
+            "composite": {
+                "type": "{[CompositeHardDel-Save].type}",
+                "code": "{[CompositeHardDel-Save].code}"
+            }
+        }
+    },
+    "CompositeHardDel-Page":
+    {
+        "action": "page",
+        "after": "CompositeHardDel-Save",
+        "name": "app.CompositeHardDel",
+        "page": {
+            "index": 1,
+            "size": 1,
+            "count": false
+        },
+        "filters": [
+            {
+                "field": "name",
+                "condition": "NOT_null"
+            }       
+        ],
+        "orders":["-createdOn"]
+    },
+    "LongIdJoinComposite-Page":
+    {
+        "action": "page",
+        "after": "LongIdJoinComposite-Create",
+        "name": "app.LongIdJoinComposite",
+        "page": {
+            "index": 1,
+            "size": 1,
+            "count": false
+        },
+        "joins": [
+            {
+                "name": "app.CompositeHardDel",
+                "store": "composite",
+                "alias": "CompositeHardDel",
+                "relations": [
+                    {
+                        "target": "type",
+                        "source": "composite.type"
+                    },
+                    {
+                        "target": "code",
+                        "source": "composite.code"
+                    }
+                ]
+            }
+        ],
+        "filters": [
+            {
+                "field": "CompositeHardDel.type",
+                "condition": "EQUAL",
+                "value": "{[CompositeHardDel-Save].type}"
+            },
+            {
+                "field": "CompositeHardDel.code",
+                "condition": "EQUAL",
+                "value": "{[CompositeHardDel-Save].code}"
+            }   
+        ],
+        "orders":["-createdOn"]
+    }
+}
+// Response
+{
+    "time": 167108625,
+    "status": 0,
+    "data": {
+        "CompositeHardDel-Save": {
+            "time": 53876250,
+            "status": 0,
+            "info": {
+                "action": "SAVE",
+                "manager": "mainTransactionManager",
+                "name": "app.CompositeHardDel"
+            },
+            "data": {
+                "createdOn": 1764045165036,
+                "updatedOn": 1764045165036,
+                "type": 1,
+                "code": "A",
+                "name": "COBA",
+                "description": "description",
+                "isActive": "Y"
+            }
+        },
+        "LongIdJoinComposite-Create": {
+            "time": 108882042,
+            "status": 0,
+            "info": {
+                "action": "CREATE",
+                "manager": "mainTransactionManager",
+                "name": "app.LongIdJoinComposite"
+            },
+            "data": {
+                "createdOn": 1764045373587,
+                "updatedOn": 1764045373587,
+                "id": 88,
+                "name": "COBA",
+                "description": "description",
+                "isActive": "Y",
+                "composite": {
+                    "type": 1,
+                    "code": "A"
+                }
+            }
+        },
+        "CompositeHardDel-Page": {
+            "time": 113667292,
+            "status": 0,
+            "info": {
+                "action": "PAGE",
+                "manager": "mainTransactionManager",
+                "name": "app.CompositeHardDel"
+            },
+            "data": {
+                "index": 1,
+                "size": 1,
+                "count": false,
+                "data": [
+                    {
+                        "createdOn": 1764045165036,
+                        "updatedOn": 1764045165036,
+                        "type": 1,
+                        "code": "A",
+                        "name": "COBA",
+                        "description": "description",
+                        "isActive": "Y"
+                    }
+                ]
+            }
+        },
+        "LongIdJoinComposite-Page": {
+            "time": 155756917,
+            "status": 0,
+            "info": {
+                "action": "PAGE",
+                "manager": "mainTransactionManager",
+                "name": "app.LongIdJoinComposite"
+            },
+            "data": {
+                "index": 1,
+                "size": 1,
+                "count": false,
+                "data": [
+                    {
+                        "createdOn": 1764045373587,
+                        "updatedOn": 1764045373587,
+                        "id": 88,
+                        "name": "COBA",
+                        "description": "description",
+                        "isActive": "Y",
+                        "composite": {
+                            "createdOn": 1764045165036,
+                            "updatedOn": 1764045165036,
+                            "type": 1,
+                            "code": "A",
+                            "name": "COBA",
+                            "description": "description",
+                            "isActive": "Y"
+                        }
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 

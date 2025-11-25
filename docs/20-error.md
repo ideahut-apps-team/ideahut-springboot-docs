@@ -59,6 +59,17 @@ Daftar kode dan teks kesalahan.
 |CRUD-13|Identifier not available|
 |CRUD-14|CrudSpecific not found|
 |CRUD-15|Field specific not valid|
+|CRUD-16|Bulk not supported|
+|CRUD-17|Bulk not enabled|
+|CRUD-18|Bulk input not list|
+|CRUD-19|Bulk input not map|
+|CRUD-20|Bulk input empty|
+|CRUD-21|Bulk item not valid|
+|CRUD-22|Bulk action required|
+|CRUD-23|Bulk action not valid|
+|CRUD-24|Bulk after not valid|
+|CRUD-25|Bulk size reached|
+|CRUD-26|Bulk layer reached|
 
 ## Admin
 |Kode|Teks|
