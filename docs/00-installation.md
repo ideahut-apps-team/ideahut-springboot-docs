@@ -8,20 +8,20 @@ Untuk mengaktifkan library Ideahut Spring Boot di project.
 <dependency>
     <groupId>net.ideahut</groupId>
     <artifactId>ideahut-springboot-3x</artifactId>
-    <version>3.2.1</version>
+    <version>25.12.12</version>
 </dependency>
 <dependency>
     <groupId>net.ideahut</groupId>
-    <version>3.2.1</version>
     <artifactId>ideahut-springboot-3.2.3</artifactId>
+	<version>25.12.12</version>
 </dependency>
 ```
 
 ## Gradle
 
 ``` cmd
-implementation group: 'net.ideahut', name: 'ideahut-springboot-3x', version: '3.2.1'
-implementation group: 'net.ideahut', name: 'ideahut-springboot-3.2.3', version: '3.2.1'
+implementation group: 'net.ideahut', name: 'ideahut-springboot-3x', version: '25.12.12'
+implementation group: 'net.ideahut', name: 'ideahut-springboot-3.2.3', version: '25.12.12'
 ```
 
 Daftar versi dapat dilihat di:
